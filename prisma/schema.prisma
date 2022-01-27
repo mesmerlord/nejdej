@@ -10,6 +10,43 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+  oauth_token_secret String?
+  oauth_token        String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model Post {
   id    String @id @default(uuid())
   title String
@@ -17,6 +54,88 @@ model Post {
 
   // To return `Date`s intact through the API we need to add data transformers
   // https://trpc.io/docs/data-transformers
-  createdAt DateTime @unique @default(now())
-  updatedAt DateTime @unique @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  text      String
+  total     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Review        Review[]
+  Advert        Advert[]
+}
+
+model Category {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  subCategory SubCategory[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model SubCategory {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  status      Boolean
+  adverts     Advert[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+}
+
+model View {
+  id          String  @id @default(uuid())
+  dailyView   Int     @default(0)
+  weeklyView  Int     @default(0)
+  monthlyView Int     @default(0)
+  yearlyView  Int     @default(0)
+  totalView   Int     @default(0)
+  Advert      Advert?
+}
+
+model Photo {
+  id        String   @id @default(uuid())
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Advert    Advert?  @relation(fields: [advertId], references: [id])
+  advertId  String?
+}
+
+model Advert {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  status      Boolean
+  subCategory SubCategory[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  User        User?         @relation(fields: [userId], references: [id])
+  userId      String?
+
+  View   View?   @relation(fields: [viewId], references: [id])
+  viewId String? @unique
+
+  photos Photo[]
+
 }

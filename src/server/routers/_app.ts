@@ -3,6 +3,7 @@
  */
 import superjson from 'superjson';
 import { createRouter } from '../createRouter';
+import { advertRouter } from './advert';
 import { postRouter } from './post';
 
 /**
@@ -22,6 +23,7 @@ export const appRouter = createRouter()
    * @link https://trpc.io/docs/error-formatting
    */
   // .formatError(({ shape, error }) => { })
-  .merge('post.', postRouter);
+  .merge('post.', postRouter)
+  .merge('advert.', advertRouter);
 
 export type AppRouter = typeof appRouter;

@@ -3,31 +3,31 @@ import { trpc } from 'utils/trpc';
 import NextError from 'next/error';
 import { NextPageWithLayout } from 'pages/_app';
 
-const PostViewPage: NextPageWithLayout = () => {
+const AdvertViewPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
-  const postQuery = trpc.useQuery(['post.byId', { id }]);
+  const advertQuery = trpc.useQuery(['advert.byId', { id }]);
 
-  if (postQuery.error) {
+  if (advertQuery.error) {
     return (
       <>
         <NextError
-          title={postQuery.error.message}
-          statusCode={postQuery.error.data?.httpStatus ?? 500}
+          title={advertQuery.error.message}
+          statusCode={advertQuery.error.data?.httpStatus ?? 500}
         />
       </>
     );
   }
 
-  if (postQuery.status !== 'success') {
+  if (advertQuery.status !== 'success') {
     return <>Loading...</>;
   }
-  const { data } = postQuery;
+  const { data } = advertQuery;
   return (
     <>
       <h1>{data.title}</h1>
       <em>Created {data.createdAt.toLocaleDateString()}</em>
 
-      <p>{data.text}</p>
+      <p>{data.description}</p>
 
       <h2>Raw data:</h2>
       <pre>{JSON.stringify(data, null, 4)}</pre>
@@ -35,4 +35,4 @@ const PostViewPage: NextPageWithLayout = () => {
   );
 };
 
-export default PostViewPage;
+export default AdvertViewPage;

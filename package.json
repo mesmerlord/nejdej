@@ -55,7 +55,7 @@
     "react-nprogress": "^0.1.6",
     "react-query": "^3.27.0",
     "start-server-and-test": "^1.12.0",
-    "superjson": "^1.7.4",
+    "superjson": "^1.8.1",
     "zod": "^3.0.0",
     "zustand": "^3.6.9"
   },

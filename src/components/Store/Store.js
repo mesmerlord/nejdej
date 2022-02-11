@@ -4,8 +4,8 @@ import create from 'zustand';
 let store;
 
 const initialState = {
+  siteName: 'NejDej',
   isAnimating: false,
-  siteName: process.env.NEXT_PUBLIC_SITE_NAME,
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
 };
 

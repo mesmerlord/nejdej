@@ -27,7 +27,8 @@ export const advertRouter = createRouter()
   .query('infinite', {
     input: z.object({
       limit: z.number().min(1).max(100).nullish(),
-      cursor: z.string().optional(), // <-- "cursor" needs to exist, but can be any type
+      cursor: z.string().optional(),
+      subCategory: z.string().optional(), // <-- "cursor" needs to exist, but can be any type
     }),
     async resolve({ input, ctx }) {
       /**
@@ -36,10 +37,12 @@ export const advertRouter = createRouter()
        */
 
       const limit = input.limit ?? 50;
-      const { cursor } = input;
+      const { cursor, subCategory } = input;
       const items = await ctx.prisma.advert.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
-
+        where: subCategory
+          ? { subCategory: { some: { id: subCategory } } }
+          : undefined,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
           createdAt: 'asc',
@@ -92,6 +95,7 @@ export const advertRouter = createRouter()
           message: `No advert with id '${id}'`,
         });
       }
+      console.log(advert);
       return advert;
     },
   })

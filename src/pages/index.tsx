@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
 import { Container, Title } from '@mantine/core';
+import LinkText from 'components/common/LinkText';
 
 const IndexPage: NextPageWithLayout = () => {
   const utils = trpc.useContext();
@@ -24,6 +25,7 @@ const IndexPage: NextPageWithLayout = () => {
 
   return (
     <>
+      {router.locale}
       <Container>
         <Title>Hello</Title>
         {advertsQuery.data?.map((advert) => (

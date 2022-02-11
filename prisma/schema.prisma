@@ -85,7 +85,7 @@ model User {
 model Category {
   id          String        @id @default(uuid())
   title       String
-  description String
+  description String?
   subCategory SubCategory[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt

@@ -4,6 +4,7 @@
 import superjson from 'superjson';
 import { createRouter } from '../createRouter';
 import { advertRouter } from './advert';
+import { categoryRouter } from './category';
 import { postRouter } from './post';
 
 /**
@@ -24,6 +25,7 @@ export const appRouter = createRouter()
    */
   // .formatError(({ shape, error }) => { })
   .merge('post.', postRouter)
-  .merge('advert.', advertRouter);
+  .merge('advert.', advertRouter)
+  .merge('category.', categoryRouter);
 
 export type AppRouter = typeof appRouter;

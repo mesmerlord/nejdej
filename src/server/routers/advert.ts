@@ -125,7 +125,6 @@ export const advertRouter = createRouter()
           },
           select: { role: true },
         });
-        console.log(user_role);
         return next();
       })
       .mutation('edit', {

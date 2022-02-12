@@ -92,24 +92,28 @@ model User {
 }
 
 model Category {
-  id          String        @id @default(uuid())
-  title       String
-  description String?
-  subCategory SubCategory[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id            String        @id @default(uuid())
+  enTitle       String
+  skTitle       String
+  enDescription String?
+  skDescription String?
+  subCategory   SubCategory[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model SubCategory {
-  id          String    @id @default(uuid())
-  title       String
-  description String
-  status      Boolean
-  adverts     Advert[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  Category    Category? @relation(fields: [categoryId], references: [id])
-  categoryId  String?
+  id            String    @id @default(uuid())
+  enTitle       String
+  skTitle       String
+  enDescription String?
+  skDescription String?
+  status        Boolean
+  adverts       Advert[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Category      Category? @relation(fields: [categoryId], references: [id])
+  categoryId    String?
 }
 
 model View {

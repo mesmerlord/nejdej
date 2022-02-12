@@ -10,6 +10,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Role {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  User        User[]
+}
+
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -80,6 +87,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   Review        Review[]
   Advert        Advert[]
+  role          Role?     @relation(fields: [roleId], references: [id])
+  roleId        String?
 }
 
 model Category {

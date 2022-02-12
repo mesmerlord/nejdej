@@ -9,7 +9,7 @@ import LinkText from 'components/common/LinkText';
 
 const IndexPage: NextPageWithLayout = () => {
   const utils = trpc.useContext();
-  const advertsQuery = trpc.useQuery(['advert.infinite', { limit: 50 }]);
+  const advertsQuery = trpc.useQuery(['advert.admin.infinite', { limit: 50 }]);
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -31,7 +31,7 @@ const IndexPage: NextPageWithLayout = () => {
         {advertsQuery.data?.map((advert) => (
           <article key={advert.id}>
             <h3>{advert.title}</h3>
-            <Link href={`/advert/${advert.id}`}>
+            <Link href={`/adverts/${advert.id}`}>
               <a>View more</a>
             </Link>
           </article>

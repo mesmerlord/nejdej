@@ -6,13 +6,14 @@
 import { createRouter } from 'server/createRouter';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
+import { getSession } from 'next-auth/react';
 
 export const advertRouter = createRouter()
   // create
   .mutation('add', {
     input: z.object({
       title: z.string().min(1).max(100),
-      text: z.string().min(1),
+      description: z.string().min(1),
       subCategory: z.number().optional(),
       photos: z.string().url().optional(),
     }),
@@ -100,23 +101,7 @@ export const advertRouter = createRouter()
     },
   })
   // update
-  .mutation('edit', {
-    input: z.object({
-      id: z.string().uuid(),
-      data: z.object({
-        title: z.string().min(1).max(32).optional(),
-        text: z.string().min(1).optional(),
-      }),
-    }),
-    async resolve({ ctx, input }) {
-      const { id, data } = input;
-      const advert = await ctx.prisma.advert.update({
-        where: { id },
-        data,
-      });
-      return advert;
-    },
-  })
+
   // delete
   .mutation('delete', {
     input: z.string().uuid(),
@@ -124,4 +109,67 @@ export const advertRouter = createRouter()
       await ctx.prisma.advert.delete({ where: { id } });
       return id;
     },
-  });
+  })
+  .merge(
+    'admin.',
+    createRouter()
+      .middleware(async ({ ctx, next }) => {
+        const session = await getSession(ctx);
+        const user = session?.user;
+        if (!session?.user || !user?.email) {
+          throw new TRPCError({ code: 'UNAUTHORIZED' });
+        }
+        const user_role = await ctx.prisma.user.findUnique({
+          where: {
+            email: user.email,
+          },
+          select: { role: true },
+        });
+        console.log(user_role);
+        return next();
+      })
+      .mutation('edit', {
+        input: z.object({
+          id: z.string().uuid(),
+          data: z.object({
+            title: z.string().min(1).max(32).optional(),
+            text: z.string().min(1).optional(),
+          }),
+        }),
+        async resolve({ ctx, input }) {
+          const { id, data } = input;
+          const advert = await ctx.prisma.advert.update({
+            where: { id },
+            data,
+          });
+          return advert;
+        },
+      })
+      .query('infinite', {
+        input: z.object({
+          limit: z.number().min(1).max(100).nullish(),
+          cursor: z.string().optional(),
+          subCategory: z.string().optional(), // <-- "cursor" needs to exist, but can be any type
+        }),
+        async resolve({ input, ctx }) {
+          /**
+           * For pagination you can have a look at this docs site
+           * @link https://trpc.io/docs/useInfiniteQuery
+           */
+
+          const limit = input.limit ?? 50;
+          const { cursor, subCategory } = input;
+          const items = await ctx.prisma.advert.findMany({
+            take: limit + 1, // get an extra item at the end which we'll use as next cursor
+            where: subCategory
+              ? { subCategory: { some: { id: subCategory } } }
+              : undefined,
+            cursor: cursor ? { id: cursor } : undefined,
+            orderBy: {
+              createdAt: 'asc',
+            },
+          });
+          return items;
+        },
+      }),
+  );

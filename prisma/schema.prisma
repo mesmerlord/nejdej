@@ -126,7 +126,7 @@ model Advert {
   id          String        @id @default(uuid())
   title       String
   description String?
-  status      Boolean @default(false)
+  status      Boolean       @default(false)
   subCategory SubCategory[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt

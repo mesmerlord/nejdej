@@ -1,0 +1,27 @@
+FROM node:14-alpine
+
+RUN apk add --no-cache libc6-compat
+
+RUN npm i -g npm
+RUN npm config set fetch-retry-mintimeout 20000
+RUN npm config set fetch-retry-maxtimeout 120000
+ENV NODE_ENV production
+ENV PORT 3000
+
+EXPOSE 3000
+
+WORKDIR /home/nextjs/app
+
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+COPY package.json .
+
+RUN chown -R nextjs:nodejs /home/nextjs
+
+USER nextjs
+
+COPY . .
+
+RUN npm install
+CMD [ "npm" , "start" ]

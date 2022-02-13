@@ -31,6 +31,7 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.6",
     "@mantine/core": "^3.6.6",
     "@mantine/hooks": "^3.6.6",
     "@mantine/next": "^3.6.6",

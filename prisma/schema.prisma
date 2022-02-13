@@ -100,6 +100,9 @@ model Category {
   subCategory   SubCategory[]
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+
+  @@unique([enTitle, skTitle])
 }
 
 model SubCategory {
@@ -108,12 +111,14 @@ model SubCategory {
   skTitle       String
   enDescription String?
   skDescription String?
-  status        Boolean
   adverts       Advert[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   Category      Category? @relation(fields: [categoryId], references: [id])
   categoryId    String?
+
+
+  @@unique([enTitle, skTitle])
 }
 
 model View {
@@ -145,9 +150,9 @@ model Advert {
   updatedAt   DateTime      @updatedAt
   User        User?         @relation(fields: [userId], references: [id])
   userId      String?
-
-  View   View?   @relation(fields: [viewId], references: [id])
-  viewId String? @unique
+  price       Int?
+  View        View?         @relation(fields: [viewId], references: [id])
+  viewId      String?       @unique
 
   photos Photo[]
 

@@ -84,8 +84,10 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Category" (
     "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT,
+    "enTitle" TEXT NOT NULL,
+    "skTitle" TEXT NOT NULL,
+    "enDescription" TEXT,
+    "skDescription" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -95,9 +97,10 @@ CREATE TABLE "Category" (
 -- CreateTable
 CREATE TABLE "SubCategory" (
     "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "status" BOOLEAN NOT NULL,
+    "enTitle" TEXT NOT NULL,
+    "skTitle" TEXT NOT NULL,
+    "enDescription" TEXT,
+    "skDescription" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "categoryId" TEXT,
@@ -137,6 +140,7 @@ CREATE TABLE "Advert" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT,
+    "price" INTEGER,
     "viewId" TEXT,
 
     CONSTRAINT "Advert_pkey" PRIMARY KEY ("id")

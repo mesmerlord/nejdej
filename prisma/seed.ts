@@ -6,25 +6,79 @@
 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
+const { faker } = require('@faker-js/faker');
+var fs = require('fs');
+
+type Category = {
+  enTitle: string;
+  skTitle: string;
+  subCategory: SubCategory[];
+};
+
+type SubCategory = {
+  enTitle: string;
+  skTitle: string;
+};
 
 async function main() {
-  const firstPostId = '5c03994c-fc16-47e0-bd02-d218a370a078';
-  await prisma.post.upsert({
-    where: {
-      id: firstPostId,
+  const json_obj = JSON.parse(fs.readFileSync('prisma/seed_file.json', 'utf8'));
+  await json_obj.categories.map(async (category: Category) => {
+    await prisma.category.create({
+      data: {
+        enTitle: category.enTitle,
+        skTitle: category.skTitle,
+        enDescription: `Its about ${category.enTitle}`,
+        skDescription: `To je ${category.skTitle}`,
+        subCategory: {
+          create: category.subCategory.map((subCategory: SubCategory) => {
+            return {
+              enDescription: `Its about ${subCategory.enTitle}`,
+              skDescription: `To je ${subCategory.skTitle}`,
+
+              ...subCategory,
+            };
+          }),
+        },
+      },
+    });
+  });
+  const subCategories = await prisma.subCategory.findMany({
+    select: {
+      id: true,
     },
-    create: {
-      id: firstPostId,
-      title: 'First Post',
-      text: 'This is an example post generated from `prisma/seed.ts`',
-    },
-    update: {},
+  });
+  subCategories.map(async (subCategory) => {
+    Array.from(Array(5).keys()).map((_) => {
+      const advert = {
+        title: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        subCategory: { connect: { id: subCategory.id } },
+        photos: {
+          create: Array.from(Array(3).keys()).map((_) => {
+            return {
+              url: faker.image.technics(),
+            };
+          }),
+        },
+        price: Number(faker.commerce.price()),
+      };
+      prisma.advert
+        .create({
+          data: { ...advert },
+        })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    });
   });
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.log(e);
     process.exit(1);
   })
   .finally(async () => {

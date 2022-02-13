@@ -1,0 +1,93 @@
+{
+  "categories": [
+    {
+      "enTitle": "Zvieratá",
+      "skTitle": "Pets",
+      "subCategory": [
+        { "enTitle": "Mačky", "skTitle": "Cats" },
+        { "enTitle": "Psy", "skTitle": "Dogs" },
+        { "enTitle": "Akvarijné rybičky", "skTitle": "Aquarium fish" },
+        { "enTitle": "Drobné cicavce", "skTitle": "Small mammals" },
+        { "enTitle": "Kone", "skTitle": "Horses" }
+      ]
+    },
+    {
+      "enTitle": "Deti",
+      "skTitle": "Kids",
+      "subCategory": [
+        { "enTitle": "Autosedačky", "skTitle": "Car seats" },
+        { "enTitle": "Baby monitory", "skTitle": "Baby monitors" },
+        { "enTitle": "Bicykle", "skTitle": "Bicycles" },
+        { "enTitle": "Detská literatúra", "skTitle": "Children's literature" },
+        { "enTitle": "Hračky", "skTitle": "Toys" }
+      ]
+    },
+    {
+      "enTitle": "Reality",
+      "skTitle": "Reality",
+      "subCategory": [
+        { "enTitle": "Byty", "skTitle": "Apartments" },
+        { "enTitle": "Domy", "skTitle": "Houses" },
+        { "enTitle": "Nové projekty", "skTitle": "New projects" },
+        { "enTitle": "Garáže", "skTitle": "Garages" },
+        { "enTitle": "Hotely, reštaurácie", "skTitle": "Hotels, restaurants" }
+      ]
+    },
+    {
+      "enTitle": "Práca",
+      "skTitle": "Work",
+      "subCategory": [
+        { "enTitle": "Administratíva", "skTitle": "Administration" },
+        {
+          "enTitle": "Chémia a potravinárstvo",
+          "skTitle": "Chemistry and food industry"
+        },
+        {
+          "enTitle": "Doprava a logistika",
+          "skTitle": "Transport and logistics"
+        },
+        {
+          "enTitle": "Financie a ekonomika",
+          "skTitle": "Finance and economics"
+        },
+        {
+          "enTitle": "IT a telekomunikácie",
+          "skTitle": "IT and telecommunications"
+        }
+      ]
+    },
+    {
+      "enTitle": "Auto",
+      "skTitle": "Cars",
+      "subCategory": [
+        { "enTitle": "Alfa Romeo", "skTitle": "Alfa Romeo" },
+        { "enTitle": "Audi", "skTitle": "Audi" },
+        { "enTitle": "BMW", "skTitle": "BMW" },
+        { "enTitle": "Citroën", "skTitle": "Citroën" },
+        { "enTitle": "Dacia", "skTitle": "Dacia" }
+      ]
+    },
+    {
+      "enTitle": "Dom a záhrada",
+      "skTitle": "Home and other",
+      "subCategory": [
+        { "enTitle": "Bazény", "skTitle": "Pools" },
+        { "enTitle": "Čerpadlá", "skTitle": "Pumps" },
+        { "enTitle": "Dvere, brány", "skTitle": "Doors, gates" },
+        { "enTitle": "Klimatizácie", "skTitle": "Air conditioning" },
+        { "enTitle": "Kosačky", "skTitle": "Mowers" }
+      ]
+    },
+    {
+      "enTitle": "PC",
+      "skTitle": "PC",
+      "subCategory": [
+        { "enTitle": "Fotoaparáty", "skTitle": "DVD, Blu-ray drives" },
+        { "enTitle": "GPS navigácia", "skTitle": "Cameras" },
+        { "enTitle": "Grafické karty", "skTitle": "GPS navigation" },
+        { "enTitle": "Hard disky, SSD", "skTitle": "Graphics cards" },
+        { "enTitle": "Herné konzoly", "skTitle": "Hard drives, SSD" }
+      ]
+    }
+  ]
+}

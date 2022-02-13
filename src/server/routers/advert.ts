@@ -74,11 +74,11 @@ export const advertRouter = createRouter()
           subCategory: {
             select: {
               id: true,
-              title: true,
+              enTitle: true,
               Category: {
                 select: {
                   id: true,
-                  title: true,
+                  enTitle: true,
                 },
               },
             },

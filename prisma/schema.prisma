@@ -98,6 +98,7 @@ model Category {
   enDescription String?
   skDescription String?
   subCategory   SubCategory[]
+  photo         String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
@@ -112,6 +113,7 @@ model SubCategory {
   enDescription String?
   skDescription String?
   adverts       Advert[]
+  photo         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   Category      Category? @relation(fields: [categoryId], references: [id])

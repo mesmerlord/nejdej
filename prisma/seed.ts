@@ -25,6 +25,7 @@ async function main() {
   await json_obj.categories.map(async (category: Category) => {
     await prisma.category.create({
       data: {
+        photo: `https://fakeimg.pl/400x400/?text=${category.enTitle}&font=lobster?retina=1`,
         enTitle: category.enTitle,
         skTitle: category.skTitle,
         enDescription: `Its about ${category.enTitle}`,
@@ -32,9 +33,9 @@ async function main() {
         subCategory: {
           create: category.subCategory.map((subCategory: SubCategory) => {
             return {
+              photo: `https://fakeimg.pl/400x400/?text=${subCategory.enTitle}&font=lobster?retina=1`,
               enDescription: `Its about ${subCategory.enTitle}`,
               skDescription: `To je ${subCategory.skTitle}`,
-
               ...subCategory,
             };
           }),

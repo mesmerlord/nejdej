@@ -88,6 +88,7 @@ CREATE TABLE "Category" (
     "skTitle" TEXT NOT NULL,
     "enDescription" TEXT,
     "skDescription" TEXT,
+    "photo" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -101,6 +102,7 @@ CREATE TABLE "SubCategory" (
     "skTitle" TEXT NOT NULL,
     "enDescription" TEXT,
     "skDescription" TEXT,
+    "photo" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "categoryId" TEXT,
@@ -166,6 +168,12 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationTok
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Category_enTitle_skTitle_key" ON "Category"("enTitle", "skTitle");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SubCategory_enTitle_skTitle_key" ON "SubCategory"("enTitle", "skTitle");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Advert_viewId_key" ON "Advert"("viewId");

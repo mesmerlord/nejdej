@@ -1,92 +1,92 @@
 {
   "categories": [
     {
-      "enTitle": "Zvieratá",
-      "skTitle": "Pets",
+      "skTitle": "Zvieratá",
+      "enTitle": "Pets",
       "subCategory": [
-        { "enTitle": "Mačky", "skTitle": "Cats" },
-        { "enTitle": "Psy", "skTitle": "Dogs" },
-        { "enTitle": "Akvarijné rybičky", "skTitle": "Aquarium fish" },
-        { "enTitle": "Drobné cicavce", "skTitle": "Small mammals" },
-        { "enTitle": "Kone", "skTitle": "Horses" }
+        { "skTitle": "Mačky", "enTitle": "Cats" },
+        { "skTitle": "Psy", "enTitle": "Dogs" },
+        { "skTitle": "Akvarijné rybičky", "enTitle": "Aquarium fish" },
+        { "skTitle": "Drobné cicavce", "enTitle": "Small mammals" },
+        { "skTitle": "Kone", "enTitle": "Horses" }
       ]
     },
     {
-      "enTitle": "Deti",
-      "skTitle": "Kids",
+      "skTitle": "Deti",
+      "enTitle": "Kids",
       "subCategory": [
-        { "enTitle": "Autosedačky", "skTitle": "Car seats" },
-        { "enTitle": "Baby monitory", "skTitle": "Baby monitors" },
-        { "enTitle": "Bicykle", "skTitle": "Bicycles" },
-        { "enTitle": "Detská literatúra", "skTitle": "Children's literature" },
-        { "enTitle": "Hračky", "skTitle": "Toys" }
+        { "skTitle": "Autosedačky", "enTitle": "Car seats" },
+        { "skTitle": "Baby monitory", "enTitle": "Baby monitors" },
+        { "skTitle": "Bicykle", "enTitle": "Bicycles" },
+        { "skTitle": "Detská literatúra", "enTitle": "Children's literature" },
+        { "skTitle": "Hračky", "enTitle": "Toys" }
       ]
     },
     {
-      "enTitle": "Reality",
       "skTitle": "Reality",
+      "enTitle": "Reality",
       "subCategory": [
-        { "enTitle": "Byty", "skTitle": "Apartments" },
-        { "enTitle": "Domy", "skTitle": "Houses" },
-        { "enTitle": "Nové projekty", "skTitle": "New projects" },
-        { "enTitle": "Garáže", "skTitle": "Garages" },
-        { "enTitle": "Hotely, reštaurácie", "skTitle": "Hotels, restaurants" }
+        { "skTitle": "Byty", "enTitle": "Apartments" },
+        { "skTitle": "Domy", "enTitle": "Houses" },
+        { "skTitle": "Nové projekty", "enTitle": "New projects" },
+        { "skTitle": "Garáže", "enTitle": "Garages" },
+        { "skTitle": "Hotely, reštaurácie", "enTitle": "Hotels, restaurants" }
       ]
     },
     {
-      "enTitle": "Práca",
-      "skTitle": "Work",
+      "skTitle": "Práca",
+      "enTitle": "Work",
       "subCategory": [
-        { "enTitle": "Administratíva", "skTitle": "Administration" },
+        { "skTitle": "Administratíva", "enTitle": "Administration" },
         {
-          "enTitle": "Chémia a potravinárstvo",
-          "skTitle": "Chemistry and food industry"
+          "skTitle": "Chémia a potravinárstvo",
+          "enTitle": "Chemistry and food industry"
         },
         {
-          "enTitle": "Doprava a logistika",
-          "skTitle": "Transport and logistics"
+          "skTitle": "Doprava a logistika",
+          "enTitle": "Transport and logistics"
         },
         {
-          "enTitle": "Financie a ekonomika",
-          "skTitle": "Finance and economics"
+          "skTitle": "Financie a ekonomika",
+          "enTitle": "Finance and economics"
         },
         {
-          "enTitle": "IT a telekomunikácie",
-          "skTitle": "IT and telecommunications"
+          "skTitle": "IT a telekomunikácie",
+          "enTitle": "IT and telecommunications"
         }
       ]
     },
     {
-      "enTitle": "Auto",
-      "skTitle": "Cars",
+      "skTitle": "Auto",
+      "enTitle": "Cars",
       "subCategory": [
-        { "enTitle": "Alfa Romeo", "skTitle": "Alfa Romeo" },
-        { "enTitle": "Audi", "skTitle": "Audi" },
-        { "enTitle": "BMW", "skTitle": "BMW" },
-        { "enTitle": "Citroën", "skTitle": "Citroën" },
-        { "enTitle": "Dacia", "skTitle": "Dacia" }
+        { "skTitle": "Alfa Romeo", "enTitle": "Alfa Romeo" },
+        { "skTitle": "Audi", "enTitle": "Audi" },
+        { "skTitle": "BMW", "enTitle": "BMW" },
+        { "skTitle": "Citroën", "enTitle": "Citroën" },
+        { "skTitle": "Dacia", "enTitle": "Dacia" }
       ]
     },
     {
-      "enTitle": "Dom a záhrada",
-      "skTitle": "Home and other",
+      "skTitle": "Dom a záhrada",
+      "enTitle": "Home and other",
       "subCategory": [
-        { "enTitle": "Bazény", "skTitle": "Pools" },
-        { "enTitle": "Čerpadlá", "skTitle": "Pumps" },
-        { "enTitle": "Dvere, brány", "skTitle": "Doors, gates" },
-        { "enTitle": "Klimatizácie", "skTitle": "Air conditioning" },
-        { "enTitle": "Kosačky", "skTitle": "Mowers" }
+        { "skTitle": "Bazény", "enTitle": "Pools" },
+        { "skTitle": "Čerpadlá", "enTitle": "Pumps" },
+        { "skTitle": "Dvere, brány", "enTitle": "Doors, gates" },
+        { "skTitle": "Klimatizácie", "enTitle": "Air conditioning" },
+        { "skTitle": "Kosačky", "enTitle": "Mowers" }
       ]
     },
     {
-      "enTitle": "PC",
       "skTitle": "PC",
+      "enTitle": "PC",
       "subCategory": [
-        { "enTitle": "Fotoaparáty", "skTitle": "DVD, Blu-ray drives" },
-        { "enTitle": "GPS navigácia", "skTitle": "Cameras" },
-        { "enTitle": "Grafické karty", "skTitle": "GPS navigation" },
-        { "enTitle": "Hard disky, SSD", "skTitle": "Graphics cards" },
-        { "enTitle": "Herné konzoly", "skTitle": "Hard drives, SSD" }
+        { "skTitle": "Fotoaparáty", "enTitle": "DVD, Blu-ray drives" },
+        { "skTitle": "GPS navigácia", "enTitle": "Cameras" },
+        { "skTitle": "Grafické karty", "enTitle": "GPS navigation" },
+        { "skTitle": "Hard disky, SSD", "enTitle": "Graphics cards" },
+        { "skTitle": "Herné konzoly", "enTitle": "Toys" }
       ]
     }
   ]

@@ -10,17 +10,19 @@ import { getSession } from 'next-auth/react';
 
 export const categoryRouter = createRouter()
   .query('all', {
-    async resolve({ ctx }) {
-      /**
-       * For pagination you can have a look at this docs site
-       * @link https://trpc.io/docs/useInfiniteQuery
-       */
-
+    input: z.object({
+      locale: z.string().length(2).optional(),
+    }),
+    async resolve({ ctx, input }) {
+      const { locale } = input || 'sk';
       return ctx.prisma.category.findMany({
         select: {
           id: true,
-          enTitle: true,
-          enDescription: true,
+          enTitle: locale === 'en' ? true : false,
+          enDescription: locale === 'en' ? true : false,
+          skTitle: locale === 'sk' ? true : false,
+          skDescription: locale === 'sk' ? true : false,
+          photo: true,
         },
       });
     },

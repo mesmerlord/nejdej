@@ -8,6 +8,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
 }
 
 model Role {
@@ -97,6 +98,7 @@ model Category {
   skTitle       String
   enDescription String?
   skDescription String?
+
   subCategory   SubCategory[]
   photo         String?
   createdAt     DateTime      @default(now())

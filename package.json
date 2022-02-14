@@ -3,8 +3,8 @@
   "version": "9.17.1",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "db-up": "docker-compose up -d",
+    "build": "prisma generate && next build",
+    "db-up": "docker-compose -f local.yml up -d",
     "db-seed": "prisma db seed",
     "db-migrate-dev": "yarn prisma migrate dev",
     "db-nuke": "docker-compose down --volumes --remove-orphans",

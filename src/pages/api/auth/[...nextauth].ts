@@ -12,4 +12,5 @@ const googleProvider = GoogleProvider({
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [googleProvider],
+  secret: process.env.NEXTAUTH_SECRET,
 });

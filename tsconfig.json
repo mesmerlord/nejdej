@@ -16,7 +16,8 @@
     "jsx": "preserve",
     "types": ["@types/jest", "jest-playwright-preset", "expect-playwright"],
     "baseUrl": "./src",
-    "incremental": true
+    "incremental": true,
+    "noImplicitAny": false
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

@@ -67,9 +67,7 @@ async function main() {
         .create({
           data: { ...advert },
         })
-        .then((result) => {
-          console.log(result);
-        })
+        .then((result) => {})
         .catch((e) => {
           console.log(e);
         });

@@ -1,6 +1,12 @@
 .git
-.results
-scripts
-*Dockerfile*
 node_modules
-yarn.lock
+.next
+Dockerfile
+.dockerignore
+.github
+.vscode
+playwright
+local.yml
+*env.*
+npm-debug.log
+README.md

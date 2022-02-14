@@ -6,9 +6,15 @@ import Navbar from 'components/Navbar';
 const Background = (props: any) => {
   return (
     <MantineProvider
-      //   theme={{
-      //     colorScheme: darkMode ? "dark" : "light",
-      //   }}
+      theme={{
+        breakpoints: {
+          xs: 400,
+          sm: 600,
+          md: 800,
+          lg: 1000,
+          xl: 1400,
+        },
+      }}
       withGlobalStyles
       withNormalizeCSS
     >

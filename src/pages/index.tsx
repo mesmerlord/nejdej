@@ -6,8 +6,11 @@ import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
 import {
   Badge,
+  Box,
   Button,
+  Col,
   Container,
+  Grid,
   Group,
   Image,
   Text,
@@ -38,44 +41,53 @@ const IndexPage: NextPageWithLayout = () => {
 
   return (
     <>
-      {router.locale}
-      <Container>
+      <Box sx={{ margin: '30px' }}>
         <Title>Hello</Title>
-        {categoriesQuery.data?.map((category) => (
-          <LinkText href={`/categories/${category.id}`}>
-            <Card shadow="sm" padding="lg">
-              <Card.Section>
-                <Image
-                  src={category?.photo || ''}
-                  height={160}
-                  alt={
-                    router.locale === 'en' ? category.enTitle : category.skTitle
-                  }
-                />
-              </Card.Section>
+        <Grid>
+          {categoriesQuery.data?.map((category) => (
+            <Col span={12} sm={6} md={4} xs={6} xl={3} key={category.id}>
+              <LinkText href={`/categories/${category.id}`}>
+                <Card shadow="sm" padding="lg">
+                  <Card.Section>
+                    <Image
+                      src={category?.photo || ''}
+                      height={160}
+                      alt={
+                        router.locale === 'en'
+                          ? category.enTitle
+                          : category.skTitle
+                      }
+                    />
+                  </Card.Section>
 
-              <Group position="apart" style={{ marginBottom: 5 }}>
-                <Text weight={500}>
-                  {router.locale === 'en' ? category.enTitle : category.skTitle}
-                </Text>
-              </Group>
+                  <Group position="apart" style={{ marginBottom: 5 }}>
+                    <Text weight={500}>
+                      {router.locale === 'en'
+                        ? category.enTitle
+                        : category.skTitle}
+                    </Text>
+                  </Group>
 
-              <Text size="sm">
-                {router.locale === 'en' ? category.enTitle : category.skTitle}
-              </Text>
+                  <Text size="sm">
+                    {router.locale === 'en'
+                      ? category.enDescription
+                      : category.skDescription}
+                  </Text>
 
-              <Button
-                variant="light"
-                color="blue"
-                fullWidth
-                style={{ marginTop: 14 }}
-              >
-                Book classic tour now
-              </Button>
-            </Card>
-          </LinkText>
-        ))}
-      </Container>
+                  <Button
+                    variant="light"
+                    color="blue"
+                    fullWidth
+                    style={{ marginTop: 14 }}
+                  >
+                    Book classic tour now
+                  </Button>
+                </Card>
+              </LinkText>
+            </Col>
+          ))}
+        </Grid>
+      </Box>
     </>
   );
 };

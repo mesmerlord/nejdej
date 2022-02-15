@@ -49,7 +49,7 @@ async function main() {
     },
   });
   subCategories.map(async (subCategory) => {
-    Array.from(Array(5).keys()).map((_) => {
+    Array.from(Array(5).keys()).map(async (_) => {
       const advert = {
         title: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
@@ -63,7 +63,7 @@ async function main() {
         },
         price: Number(faker.commerce.price()),
       };
-      prisma.advert
+      await prisma.advert
         .create({
           data: { ...advert },
         })

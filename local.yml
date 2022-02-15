@@ -10,6 +10,8 @@ services:
     environment:
       POSTGRES_PASSWORD: ${PGPASSWORD}
       POSTGRES_HOST_AUTH_METHOD: trust\
+    env_file:
+      - .env
 
 volumes:
   db_data:

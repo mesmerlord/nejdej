@@ -52,6 +52,29 @@ export const categoryRouter = createRouter()
       return category;
     },
   })
+  .query('byIdGetAdvertsInfinite', {
+    input: z.object({
+      id: z.string(),
+      cursor: z.string().optional(),
+    }),
+    async resolve({ ctx, input }) {
+      const { id, cursor } = input;
+      const adverts = await ctx.prisma.advert.findMany({
+        where: {
+          subCategory: { some: { categoryId: id } },
+        },
+        select: {
+          id: true,
+          photos: { select: { url: true } },
+          description: true,
+          title: true,
+          createdAt: true,
+          User: true,
+        },
+      });
+      return adverts;
+    },
+  })
   .merge(
     'admin.',
     createRouter()

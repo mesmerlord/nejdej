@@ -45,3 +45,5 @@ playwright/screenshots
 
 .env.production
 .env.development
+
+commands.txt

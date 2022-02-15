@@ -44,6 +44,7 @@ const Navbar = () => {
             theme.colorScheme == 'light'
               ? theme.colors.gray[1]
               : theme.colors.dark[4],
+          marginBottom: '20px',
         })}
       >
         <Container padding="xs">

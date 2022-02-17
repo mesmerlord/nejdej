@@ -7,6 +7,7 @@ import { createRouter } from 'server/createRouter';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { getSession } from 'next-auth/react';
+import Redis from 'ioredis';
 
 export const advertRouter = createRouter()
   // create
@@ -14,16 +15,21 @@ export const advertRouter = createRouter()
     input: z.object({
       title: z.string().min(1).max(100),
       description: z.string().min(1),
-      subCategory: z.number().optional(),
-      photos: z.string().url().optional(),
+      subCategory: z.string().optional(),
+      photos: z.array(z.string().url()).optional(),
+      price: z.number().optional(),
     }),
     async resolve({ ctx, input }) {
       const advert = await ctx.prisma.advert.create({
         data: input,
       });
+      const advertView = ctx.prisma.view.create({
+        data: { Advert: { connect: { id: advert.id } } },
+      });
       return advert;
     },
   })
+
   // read
   .query('infinite', {
     input: z.object({
@@ -58,45 +64,53 @@ export const advertRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       const { id } = input;
-      const advert = await ctx.prisma.advert.findUnique({
-        where: { id },
-        select: {
-          photos: {
-            select: {
-              url: true,
-              id: true,
+      let redis = new Redis(process.env.REDIS_URL);
+
+      const count = await redis.get(id);
+      let advert;
+      if (count) {
+        advert = JSON.parse(count);
+      } else {
+        advert = await ctx.prisma.advert.findUnique({
+          where: { id },
+          select: {
+            photos: {
+              select: {
+                url: true,
+                id: true,
+              },
             },
-          },
-          id: true,
-          title: true,
-          description: true,
-          status: true,
-          subCategory: {
-            select: {
-              id: true,
-              enTitle: true,
-              Category: {
-                select: {
-                  id: true,
-                  enTitle: true,
+            id: true,
+            title: true,
+            description: true,
+            status: true,
+            subCategory: {
+              select: {
+                id: true,
+                enTitle: true,
+                Category: {
+                  select: {
+                    id: true,
+                    enTitle: true,
+                  },
                 },
               },
             },
+            createdAt: true,
+            updatedAt: true,
+            User: { select: { name: true, email: true, image: true } },
+            View: true,
+            viewId: true,
           },
-          createdAt: true,
-          updatedAt: true,
-          userId: true,
-          View: true,
-          viewId: true,
-        },
-      });
+        });
+        redis.set(id, JSON.stringify(advert));
+      }
       if (!advert) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: `No advert with id '${id}'`,
         });
       }
-      console.log(advert);
       return advert;
     },
   })

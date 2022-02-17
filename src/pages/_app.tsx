@@ -1,7 +1,6 @@
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
 import { loggerLink } from '@trpc/client/links/loggerLink';
 import { withTRPC } from '@trpc/next';
-import { DefaultLayout } from 'components/DefaultLayout';
 import { NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { AppProps } from 'next/app';
@@ -22,17 +21,15 @@ type AppPropsWithLayout = AppProps & {
 };
 
 const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
-  const getLayout =
-    Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
   const store = useHydrate(pageProps.initialZustandState);
-  return getLayout(
+  return (
     <StoreProvider store={store}>
       <SessionProvider session={pageProps.session}>
         <Background>
           <Component {...pageProps} />
         </Background>
       </SessionProvider>
-    </StoreProvider>,
+    </StoreProvider>
   );
 }) as AppType;
 

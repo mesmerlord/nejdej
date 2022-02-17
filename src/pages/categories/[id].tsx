@@ -64,7 +64,7 @@ const CategoryViewPage: NextPageWithLayout = () => {
             <Grid>
               {data.map((advert) => (
                 <Col span={12} sm={6} md={4} xs={6} xl={3} key={advert.id}>
-                  <LinkText href={`/advert/${advert.id}`}>
+                  <LinkText href={`/adverts/${advert.id}`}>
                     <Card shadow="sm" padding="lg">
                       <Card.Section>
                         <Image

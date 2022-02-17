@@ -5,6 +5,7 @@ import superjson from 'superjson';
 import { createRouter } from '../createRouter';
 import { advertRouter } from './advert';
 import { categoryRouter } from './category';
+import { photosRouter } from './photos';
 import { postRouter } from './post';
 import { subCategoryRouter } from './subcategory';
 
@@ -28,6 +29,7 @@ export const appRouter = createRouter()
   .merge('post.', postRouter)
   .merge('advert.', advertRouter)
   .merge('category.', categoryRouter)
-  .merge('subCategory.', subCategoryRouter);
+  .merge('subCategory.', subCategoryRouter)
+  .merge('photos.', photosRouter);
 
 export type AppRouter = typeof appRouter;

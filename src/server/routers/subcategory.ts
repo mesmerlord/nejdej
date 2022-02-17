@@ -52,4 +52,32 @@ export const subCategoryRouter = createRouter()
       });
       return advertBySubcategories;
     },
+  })
+  .query('allWithCategory', {
+    input: z.object({
+      locale: z.string().length(2).optional(),
+    }),
+    async resolve({ ctx, input }) {
+      const { locale } = input;
+
+      const categoriesWithSubCategories = await ctx.prisma.category.findMany({
+        select: {
+          id: true,
+          enTitle: locale === 'en' ? true : false,
+          skTitle: locale === 'sk' ? true : false,
+          enDescription: locale === 'en' ? true : false,
+          skDescription: locale === 'sk' ? true : false,
+          subCategory: {
+            select: {
+              id: true,
+              enTitle: locale === 'en' ? true : false,
+              skTitle: locale === 'sk' ? true : false,
+              enDescription: locale === 'en' ? true : false,
+              skDescription: locale === 'sk' ? true : false,
+            },
+          },
+        },
+      });
+      return categoriesWithSubCategories;
+    },
   });

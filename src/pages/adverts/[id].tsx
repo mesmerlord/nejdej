@@ -2,15 +2,24 @@ import { useRouter } from 'next/router';
 import { trpc } from 'utils/trpc';
 import NextError from 'next/error';
 import { NextPageWithLayout } from 'pages/_app';
+import { Box, Col, Container, Grid, Image, Text, Title } from '@mantine/core';
+import { useCallback, useEffect, useState } from 'react';
+import Gallery from 'react-grid-gallery';
+import ImageBox from 'components/common/ImageBox';
 
+type ImageTypes = {
+  id: string;
+  url: string;
+  src: string;
+  thumbnail?: string;
+  thumbnailWidth: number;
+  thumbnailHeight: number;
+};
 const AdvertViewPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
-  // const subCategory = useRouter().query.id as string;
   const advertQuery = trpc.useQuery(['advert.byId', { id }]);
-  const advertInfiniteQuery = trpc.useQuery([
-    'advert.infinite',
-    { subCategory: '6d492eb6-aefb-473b-b6e1-3a177b26d11a' },
-  ]);
+  const { data } = advertQuery;
+
   if (advertQuery.error) {
     return (
       <>
@@ -25,18 +34,18 @@ const AdvertViewPage: NextPageWithLayout = () => {
   if (advertQuery.status !== 'success') {
     return <>Loading...</>;
   }
-  const { data } = advertQuery;
-  const { data: infiniteData } = advertInfiniteQuery;
-
+  // const { data: infiniteData } = advertInfiniteQuery;
   return (
     <>
-      <h1>{data.title}</h1>
-      <em>Created {data.createdAt.toLocaleDateString()}</em>
-      <p>{data.description}</p>
-      <pre>{JSON.stringify(infiniteData, null, 4)}</pre>
-
-      <h2>Raw data:</h2>
-      <pre>{JSON.stringify(data, null, 4)}</pre>
+      <Container>
+        {data && data?.photos && (
+          <Container>
+            <Title>{data.title}</Title>
+            <ImageBox images={data.photos}></ImageBox>
+            <Text>{data?.description}</Text>
+          </Container>
+        )}
+      </Container>
     </>
   );
 };

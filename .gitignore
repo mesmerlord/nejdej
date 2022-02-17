@@ -47,3 +47,5 @@ playwright/screenshots
 .env.development
 
 commands.txt
+bazos.json
+uploads/

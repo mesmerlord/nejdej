@@ -137,6 +137,7 @@ model View {
 
 model Photo {
   id        String   @id @default(uuid())
+  name String?  @default(uuid())
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

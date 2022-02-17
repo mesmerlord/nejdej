@@ -6,6 +6,14 @@ import fs from 'fs';
 const { Storage } = require('@google-cloud/storage');
 const slugify = require('slugify');
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '4mb',
+    },
+  },
+};
+
 export const photosRouter = createRouter().mutation('uploadFile', {
   input: z.object({
     name: z.string(),
@@ -41,10 +49,20 @@ export const photosRouter = createRouter().mutation('uploadFile', {
       console.log(`${filePath} uploaded to ${bucketName}`);
     }
     return uploadFile()
-      .then(() => {
-        return {
-          photoUrl: `https://ik.imagekit.io/opyvhypp7cj/nejdej/${gCloudPath}`,
-        };
+      .then(async () => {
+        const url = `https://ik.imagekit.io/opyvhypp7cj/nejdej/${gCloudPath}`;
+        const photo = await ctx.prisma.photo.create({
+          data: {
+            url,
+            name: fileName,
+          },
+          select: {
+            url: true,
+            name: true,
+            id: true,
+          },
+        });
+        return photo;
       })
       .catch((err) => {
         console.log(err);

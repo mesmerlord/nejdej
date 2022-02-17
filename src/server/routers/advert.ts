@@ -16,12 +16,34 @@ export const advertRouter = createRouter()
       title: z.string().min(1).max(100),
       description: z.string().min(1),
       subCategory: z.string().optional(),
-      photos: z.array(z.string().url()).optional(),
+      photos: z.array(z.string()).optional(),
       price: z.number().optional(),
     }),
     async resolve({ ctx, input }) {
+      const { photos, title, description, subCategory, price } = input;
+      console.log(photos);
       const advert = await ctx.prisma.advert.create({
-        data: input,
+        data: {
+          photos: photos
+            ? {
+                connect: photos?.map((photo) => {
+                  return { id: photo };
+                }),
+              }
+            : undefined,
+          title,
+          description,
+          subCategory: { connect: { id: subCategory } },
+          price,
+        },
+        select: {
+          title: true,
+          description: true,
+          subCategory: true,
+          price: true,
+          photos: true,
+          id: true,
+        },
       });
       const advertView = ctx.prisma.view.create({
         data: { Advert: { connect: { id: advert.id } } },

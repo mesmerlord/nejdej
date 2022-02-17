@@ -52,7 +52,7 @@ const SubCategoryViewPage: NextPageWithLayout = () => {
                     <Card shadow="sm" padding="lg">
                       <Card.Section>
                         <Image
-                          src={`${advert?.photos[0].url}?=${Math.floor(
+                          src={`${advert?.photos[0]?.url}?=${Math.floor(
                             Math.random() * 1000,
                           )}`}
                           height={160}

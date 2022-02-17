@@ -10,9 +10,9 @@ const ImageBox = ({ images }) => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: 2,
     slidesToScroll: 1,
-    centerMode: true,
+    centerMode: false,
   };
   const slider = useRef<any>();
   useEffect(() => {
@@ -24,7 +24,10 @@ const ImageBox = ({ images }) => {
     <Container>
       <Slider ref={slider} {...settings}>
         {images.map((image, index) => (
-          <Image height="100%" src={image.url} />
+          <Image
+            width={400}
+            src={`${image.url}?tr=h-600,w-800,ote-TkVKREVKLkNPTQ==,cm-force,bg-F3F3F3,ox-N35,oy-N50,ots-50,oa-6,otbg-70FFFF30`}
+          />
         ))}
       </Slider>
       <Group>

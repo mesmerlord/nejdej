@@ -19,7 +19,7 @@ import axios from 'axios';
 type AddAdvertFormValues = InferMutationInput<'advert.add'>;
 type Subcategory = InferMutationInput<'advert.add'>;
 type ReturnedPhotoUrl = {
-  name?: string;
+  name: string;
   url: string;
   thumbnailUrl: string;
 };

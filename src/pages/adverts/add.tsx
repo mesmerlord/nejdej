@@ -17,7 +17,6 @@ import { Dropzone } from '@mantine/dropzone';
 import axios from 'axios';
 
 type AddAdvertFormValues = InferMutationInput<'advert.add'>;
-type Subcategory = InferMutationInput<'advert.add'>;
 type ReturnedPhotoUrl = {
   name: string;
   url: string;
@@ -124,9 +123,6 @@ const AddAdvert = () => {
       setAvailableSubcategories(subCategories[0].subCategory);
     }
   };
-  useEffect(() => {
-    console.log(selectedFiles);
-  }, [selectedFiles]);
 
   const addFile = (files: File[]) => {
     files.map((file) => {

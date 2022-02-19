@@ -28,7 +28,7 @@ export const advertRouter = createRouter()
         data: {
           photos: photos
             ? {
-                create: photos,
+                createMany: { data: photos },
               }
             : undefined,
           title,

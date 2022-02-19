@@ -9,7 +9,7 @@ import { TRPCError } from '@trpc/server';
 import { getSession } from 'next-auth/react';
 import Redis from 'ioredis';
 
-export const advertRouter = createRouter()
+export const listingRouter = createRouter()
   // create
   .mutation('add', {
     input: z.object({
@@ -24,7 +24,7 @@ export const advertRouter = createRouter()
     async resolve({ ctx, input }) {
       const { photos, title, description, subCategory, price } = input;
       console.log(photos);
-      const advert = await ctx.prisma.advert.create({
+      const listing = await ctx.prisma.listing.create({
         data: {
           photos: photos
             ? {
@@ -45,10 +45,10 @@ export const advertRouter = createRouter()
           id: true,
         },
       });
-      const advertView = ctx.prisma.view.create({
-        data: { Advert: { connect: { id: advert.id } } },
+      const listingView = ctx.prisma.view.create({
+        data: { Listing: { connect: { id: listing.id } } },
       });
-      return advert;
+      return listing;
     },
   })
 
@@ -67,7 +67,7 @@ export const advertRouter = createRouter()
 
       const limit = input.limit ?? 50;
       const { cursor, subCategory } = input;
-      const items = await ctx.prisma.advert.findMany({
+      const items = await ctx.prisma.listing.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
         where: subCategory
           ? { subCategory: { some: { id: subCategory } } }
@@ -89,11 +89,11 @@ export const advertRouter = createRouter()
       let redis = new Redis(process.env.REDIS_URL);
 
       const count = await redis.get(id);
-      let advert;
+      let listing;
       if (count) {
-        advert = JSON.parse(count);
+        listing = JSON.parse(count);
       } else {
-        advert = await ctx.prisma.advert.findUnique({
+        listing = await ctx.prisma.listing.findUnique({
           where: { id },
           select: {
             photos: {
@@ -125,15 +125,15 @@ export const advertRouter = createRouter()
             viewId: true,
           },
         });
-        redis.set(id, JSON.stringify(advert));
+        redis.set(id, JSON.stringify(listing));
       }
-      if (!advert) {
+      if (!listing) {
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: `No advert with id '${id}'`,
+          message: `No listing with id '${id}'`,
         });
       }
-      return advert;
+      return listing;
     },
   })
   // update
@@ -142,7 +142,7 @@ export const advertRouter = createRouter()
   .mutation('delete', {
     input: z.string().uuid(),
     async resolve({ input: id, ctx }) {
-      await ctx.prisma.advert.delete({ where: { id } });
+      await ctx.prisma.listing.delete({ where: { id } });
       return id;
     },
   })
@@ -173,11 +173,11 @@ export const advertRouter = createRouter()
         }),
         async resolve({ ctx, input }) {
           const { id, data } = input;
-          const advert = await ctx.prisma.advert.update({
+          const listing = await ctx.prisma.listing.update({
             where: { id },
             data,
           });
-          return advert;
+          return listing;
         },
       })
       .query('infinite', {
@@ -194,7 +194,7 @@ export const advertRouter = createRouter()
 
           const limit = input.limit ?? 50;
           const { cursor, subCategory } = input;
-          const items = await ctx.prisma.advert.findMany({
+          const items = await ctx.prisma.listing.findMany({
             take: limit + 1, // get an extra item at the end which we'll use as next cursor
             where: subCategory
               ? { subCategory: { some: { id: subCategory } } }

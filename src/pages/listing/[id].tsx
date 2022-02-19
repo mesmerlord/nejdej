@@ -14,26 +14,25 @@ type ImageTypes = {
   thumbnailWidth: number;
   thumbnailHeight: number;
 };
-const AdvertViewPage: NextPageWithLayout = () => {
+const ListingViewPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
-  const advertQuery = trpc.useQuery(['advert.byId', { id }]);
-  const { data } = advertQuery;
+  const listingQuery = trpc.useQuery(['listing.byId', { id }]);
+  const { data } = listingQuery;
 
-  if (advertQuery.error) {
+  if (listingQuery.error) {
     return (
       <>
         <NextError
-          title={advertQuery.error.message}
-          statusCode={advertQuery.error.data?.httpStatus ?? 500}
+          title={listingQuery.error.message}
+          statusCode={listingQuery.error.data?.httpStatus ?? 500}
         />
       </>
     );
   }
 
-  if (advertQuery.status !== 'success') {
+  if (listingQuery.status !== 'success') {
     return <>Loading...</>;
   }
-  // const { data: infiniteData } = advertInfiniteQuery;
   return (
     <>
       <Container>
@@ -49,4 +48,4 @@ const AdvertViewPage: NextPageWithLayout = () => {
   );
 };
 
-export default AdvertViewPage;
+export default ListingViewPage;

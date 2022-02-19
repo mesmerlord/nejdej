@@ -61,7 +61,11 @@ const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
 
   return (
     <StoreProvider store={store}>
-      <SessionProvider session={pageProps.session}>
+      <SessionProvider
+        session={pageProps.session}
+        refetchInterval={30 * 60}
+        refetchOnWindowFocus={false}
+      >
         <Background>
           <Loading
             isRouteChanging={state.isRouteChanging}

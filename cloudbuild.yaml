@@ -4,25 +4,25 @@ steps:
       [
         'build',
         '-t',
-        'gcr.io/bazos-341220/bazos-new1:$SHORT_SHA',
+        'gcr.io/bazos-341220/nejdej:$SHORT_SHA',
         '--cache-from',
-        'gcr.io/bazos-341220/bazos-new1:latest',
+        'gcr.io/bazos-341220/nejdej:latest',
         '.',
       ]
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/bazos-341220/bazos-new1:$SHORT_SHA']
+    args: ['push', 'gcr.io/bazos-341220/nejdej:$SHORT_SHA']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       [
         'run',
         'deploy',
-        'bazos-new1',
+        'nejdej',
         '--image',
-        'gcr.io/bazos-341220/bazos-new1:$SHORT_SHA',
+        'gcr.io/bazos-341220/nejdej:$SHORT_SHA',
         '--region',
-        'europe-west3',
+        'europe-west4',
       ]
 images:
-  - gcr.io/bazos-341220/bazos-new1/:$SHORT_SHA
-  - gcr.io/bazos-341220/bazos-new1/:latest
+  - gcr.io/bazos-341220/nejdej/:$SHORT_SHA
+  - gcr.io/bazos-341220/nejdej/:latest

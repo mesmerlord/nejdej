@@ -21,7 +21,7 @@ const CategoryViewPage: NextPageWithLayout = () => {
   const locale = useRouter().locale;
 
   const categoryQuery = trpc.useQuery([
-    'category.byIdGetAdvertsInfinite',
+    'category.byIdGetListingsInfinite',
     { id },
   ]);
   const subCategoryQuery = trpc.useQuery([
@@ -62,13 +62,13 @@ const CategoryViewPage: NextPageWithLayout = () => {
           </Col>
           <Col span={9}>
             <Grid>
-              {data.map((advert) => (
-                <Col span={12} sm={6} md={4} xs={6} xl={3} key={advert.id}>
-                  <LinkText href={`/adverts/${advert.id}`}>
+              {data.map((listing) => (
+                <Col span={12} sm={6} md={4} xs={6} xl={3} key={listing.id}>
+                  <LinkText href={`/listing/${listing.id}`}>
                     <Card shadow="sm" padding="lg">
                       <Card.Section>
                         <Image
-                          src={`${advert?.photos[0]?.url}?=${Math.floor(
+                          src={`${listing?.photos[0]?.url}?=${Math.floor(
                             Math.random() * 1000,
                           )}`}
                           height={160}
@@ -76,10 +76,10 @@ const CategoryViewPage: NextPageWithLayout = () => {
                       </Card.Section>
 
                       <Group position="apart" style={{ marginBottom: 5 }}>
-                        <Text weight={500}>{advert.title}</Text>
+                        <Text weight={500}>{listing.title}</Text>
                       </Group>
 
-                      <Text size="sm">{advert.description}</Text>
+                      <Text size="sm">{listing.description}</Text>
 
                       <Button
                         variant="light"

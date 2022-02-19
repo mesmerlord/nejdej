@@ -50,7 +50,7 @@ async function main() {
   });
   subCategories.map(async (subCategory) => {
     Array.from(Array(5).keys()).map(async (_) => {
-      const advert = {
+      const listing = {
         title: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
         subCategory: { connect: { id: subCategory.id } },
@@ -63,9 +63,9 @@ async function main() {
         },
         price: Number(faker.commerce.price()),
       };
-      await prisma.advert
+      await prisma.listing
         .create({
-          data: { ...advert },
+          data: { ...listing },
         })
         .then((result) => {})
         .catch((e) => {

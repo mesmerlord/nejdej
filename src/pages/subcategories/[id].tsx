@@ -21,7 +21,7 @@ const SubCategoryViewPage: NextPageWithLayout = () => {
   const locale = useRouter().locale;
 
   const subCategoryQuery = trpc.useQuery([
-    'subCategory.advertsById',
+    'subCategory.listingsById',
     { id, locale },
   ]);
   if (subCategoryQuery.error) {
@@ -46,13 +46,13 @@ const SubCategoryViewPage: NextPageWithLayout = () => {
         <Grid>
           <Col span={12}>
             <Grid>
-              {data.map((advert) => (
-                <Col span={12} sm={6} md={4} xs={6} xl={2} key={advert.id}>
-                  <LinkText href={`/adverts/${advert.id}`}>
+              {data.map((listing) => (
+                <Col span={12} sm={6} md={4} xs={6} xl={2} key={listing.id}>
+                  <LinkText href={`/listing/${listing.id}`}>
                     <Card shadow="sm" padding="lg">
                       <Card.Section>
                         <Image
-                          src={`${advert?.photos[0]?.url}?=${Math.floor(
+                          src={`${listing?.photos[0]?.url}?=${Math.floor(
                             Math.random() * 1000,
                           )}`}
                           height={160}
@@ -60,10 +60,10 @@ const SubCategoryViewPage: NextPageWithLayout = () => {
                       </Card.Section>
 
                       <Group position="apart" style={{ marginBottom: 5 }}>
-                        <Text weight={500}>{advert.title}</Text>
+                        <Text weight={500}>{listing.title}</Text>
                       </Group>
 
-                      <Text size="sm">{advert.description}</Text>
+                      <Text size="sm">{listing.description}</Text>
 
                       <Button
                         variant="light"

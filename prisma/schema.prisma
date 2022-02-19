@@ -87,7 +87,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   Review        Review[]
-  Advert        Advert[]
+  Listing        Listing[]
   role          Role?     @relation(fields: [roleId], references: [id])
   roleId        String?
 }
@@ -114,7 +114,7 @@ model SubCategory {
   skTitle       String
   enDescription String?
   skDescription String?
-  adverts       Advert[]
+  listings       Listing[]
   photo         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -132,7 +132,7 @@ model View {
   monthlyView Int     @default(0)
   yearlyView  Int     @default(0)
   totalView   Int     @default(0)
-  Advert      Advert?
+  Listing      Listing?
 }
 
 model Photo {
@@ -141,11 +141,11 @@ model Photo {
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Advert    Advert?  @relation(fields: [advertId], references: [id])
-  advertId  String?
+  Listing    Listing?  @relation(fields: [listingid], references: [id])
+  listingid  String?
 }
 
-model Advert {
+model Listing {
   id          String        @id @default(uuid())
   title       String
   description String?

@@ -10,19 +10,19 @@ import {
   Container,
 } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
-import DropImage from 'components/advertsAdd/DropImage';
+import DropImage from 'components/listingsAdd/DropImage';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { trpc } from 'utils/trpc';
 import { InferMutationInput } from 'utils/trpc-helper';
 
-type AddAdvertFormValues = InferMutationInput<'advert.add'>;
+type AddListingFormValues = InferMutationInput<'listing.add'>;
 type ReturnedPhotoUrl = {
   name: string;
   url: string;
   thumbnailUrl: string;
 };
-const AddAdvert = () => {
+const AddListing = () => {
   const router = useRouter();
   const { locale } = router;
   const [selectedFiles, setSelectedFiles] = useState<ReturnedPhotoUrl[]>([]);
@@ -33,7 +33,7 @@ const AddAdvert = () => {
   const [subCategorySelected, setSubCategorySelected] = useState<
     string | null
   >();
-  const initial_values: AddAdvertFormValues = {
+  const initial_values: AddListingFormValues = {
     title: '',
     description: '',
     price: 0,
@@ -42,14 +42,14 @@ const AddAdvert = () => {
   const form = useForm({
     initialValues: initial_values,
   });
-  const mutation = trpc.useMutation(['advert.add']);
+  const mutation = trpc.useMutation(['listing.add']);
 
   const subcategoriesQuery = trpc.useQuery(
     ['subCategory.allWithCategory', { locale }],
     { refetchOnWindowFocus: false },
   );
 
-  const createAd = (values: AddAdvertFormValues) => {
+  const createAd = (values: AddListingFormValues) => {
     const photos = selectedFiles.map((selectedFile) => {
       return { name: selectedFile.name, url: selectedFile.url };
     });
@@ -122,4 +122,4 @@ const AddAdvert = () => {
     </Container>
   );
 };
-export default AddAdvert;
+export default AddListing;

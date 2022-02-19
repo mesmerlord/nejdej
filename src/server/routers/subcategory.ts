@@ -26,14 +26,14 @@ export const subCategoryRouter = createRouter()
       return subCategories;
     },
   })
-  .query('advertsById', {
+  .query('listingsById', {
     input: z.object({
       locale: z.string().length(2).optional(),
       id: z.string(),
     }),
     async resolve({ ctx, input }) {
       const { locale, id } = input;
-      const advertBySubcategories = await ctx.prisma.advert.findMany({
+      const listingBySubcategories = await ctx.prisma.listing.findMany({
         where: { subCategory: { every: { id } } },
         select: {
           id: true,
@@ -50,7 +50,7 @@ export const subCategoryRouter = createRouter()
           },
         },
       });
-      return advertBySubcategories;
+      return listingBySubcategories;
     },
   })
   .query('allWithCategory', {

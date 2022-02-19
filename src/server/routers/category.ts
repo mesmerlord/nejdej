@@ -52,14 +52,14 @@ export const categoryRouter = createRouter()
       return category;
     },
   })
-  .query('byIdGetAdvertsInfinite', {
+  .query('byIdGetListingsInfinite', {
     input: z.object({
       id: z.string(),
       cursor: z.string().optional(),
     }),
     async resolve({ ctx, input }) {
       const { id, cursor } = input;
-      const adverts = await ctx.prisma.advert.findMany({
+      const listings = await ctx.prisma.listing.findMany({
         where: {
           subCategory: { some: { categoryId: id } },
         },
@@ -72,7 +72,7 @@ export const categoryRouter = createRouter()
           User: true,
         },
       });
-      return adverts;
+      return listings;
     },
   })
   .merge(

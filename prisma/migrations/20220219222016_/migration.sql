@@ -125,16 +125,17 @@ CREATE TABLE "View" (
 -- CreateTable
 CREATE TABLE "Photo" (
     "id" TEXT NOT NULL,
+    "name" TEXT,
     "url" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "advertId" TEXT,
+    "listingid" TEXT,
 
     CONSTRAINT "Photo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Advert" (
+CREATE TABLE "Listing" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
@@ -145,11 +146,11 @@ CREATE TABLE "Advert" (
     "price" INTEGER,
     "viewId" TEXT,
 
-    CONSTRAINT "Advert_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Listing_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "_AdvertToSubCategory" (
+CREATE TABLE "_ListingToSubCategory" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -176,13 +177,13 @@ CREATE UNIQUE INDEX "Category_enTitle_skTitle_key" ON "Category"("enTitle", "skT
 CREATE UNIQUE INDEX "SubCategory_enTitle_skTitle_key" ON "SubCategory"("enTitle", "skTitle");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Advert_viewId_key" ON "Advert"("viewId");
+CREATE UNIQUE INDEX "Listing_viewId_key" ON "Listing"("viewId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_AdvertToSubCategory_AB_unique" ON "_AdvertToSubCategory"("A", "B");
+CREATE UNIQUE INDEX "_ListingToSubCategory_AB_unique" ON "_ListingToSubCategory"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_AdvertToSubCategory_B_index" ON "_AdvertToSubCategory"("B");
+CREATE INDEX "_ListingToSubCategory_B_index" ON "_ListingToSubCategory"("B");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -200,16 +201,16 @@ ALTER TABLE "User" ADD CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFE
 ALTER TABLE "SubCategory" ADD CONSTRAINT "SubCategory_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Photo" ADD CONSTRAINT "Photo_advertId_fkey" FOREIGN KEY ("advertId") REFERENCES "Advert"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Photo" ADD CONSTRAINT "Photo_listingid_fkey" FOREIGN KEY ("listingid") REFERENCES "Listing"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Advert" ADD CONSTRAINT "Advert_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Listing" ADD CONSTRAINT "Listing_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Advert" ADD CONSTRAINT "Advert_viewId_fkey" FOREIGN KEY ("viewId") REFERENCES "View"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Listing" ADD CONSTRAINT "Listing_viewId_fkey" FOREIGN KEY ("viewId") REFERENCES "View"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_AdvertToSubCategory" ADD FOREIGN KEY ("A") REFERENCES "Advert"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ListingToSubCategory" ADD FOREIGN KEY ("A") REFERENCES "Listing"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_AdvertToSubCategory" ADD FOREIGN KEY ("B") REFERENCES "SubCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ListingToSubCategory" ADD FOREIGN KEY ("B") REFERENCES "SubCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -16,7 +16,9 @@ export const advertRouter = createRouter()
       title: z.string().min(1).max(100),
       description: z.string().min(1),
       subCategory: z.string().optional(),
-      photos: z.array(z.string()).optional(),
+      photos: z
+        .array(z.object({ url: z.string().url(), name: z.string() }))
+        .optional(),
       price: z.number().optional(),
     }),
     async resolve({ ctx, input }) {
@@ -26,9 +28,7 @@ export const advertRouter = createRouter()
         data: {
           photos: photos
             ? {
-                connect: photos?.map((photo) => {
-                  return { id: photo };
-                }),
+                create: photos,
               }
             : undefined,
           title,

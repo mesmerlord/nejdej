@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { trpc } from 'utils/trpc';
 import { InferMutationInput } from 'utils/trpc-helper';
 import { Dropzone } from '@mantine/dropzone';
+import axios from 'axios';
 
 type AddAdvertFormValues = InferMutationInput<'advert.add'>;
 type Subcategory = InferMutationInput<'advert.add'>;
@@ -21,9 +22,13 @@ type ReturnedPhotoUrl = {
   name?: string;
   url: string;
   thumbnailUrl: string;
-  id: string;
 };
-
+type AllowedImages =
+  | 'image/png'
+  | 'image/jpeg'
+  | 'image/sgv+xml'
+  | 'image/gif'
+  | 'image/webp';
 const convertBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
@@ -42,7 +47,7 @@ const AddAdvert = () => {
   const router = useRouter();
   const { locale } = router;
   const [selectedFiles, setSelectedFiles] = useState<ReturnedPhotoUrl[]>([]);
-
+  const [addedFiles, setAddedFiles] = useState<{}>({});
   const [availableSubcategories, setAvailableSubcategories] = useState<
     any[] | null
   >(null);
@@ -59,7 +64,40 @@ const AddAdvert = () => {
     initialValues: initial_values,
   });
   const mutation = trpc.useMutation(['advert.add']);
-  const addPhotoMutation = trpc.useMutation(['photos.uploadFile']);
+  const addPhotoMutation = trpc.useMutation(['photos.uploadFile'], {
+    onSettled: (data) => {
+      if (data) {
+        const { signedUrl, fileName, originalName, thumbnailUrl, url } = data;
+        const reader = new FileReader();
+
+        const file = addedFiles[originalName].file;
+        reader.onload = () => {
+          const result = reader.result;
+          axios
+            .put(signedUrl, file, {
+              headers: {
+                'Content-Type': file.type,
+              },
+            })
+            .then((data) => {
+              let newSelectedFiles: any = {
+                name: file.name,
+                thumbnailUrl,
+                url,
+              };
+              setSelectedFiles((oldArray) => [...oldArray, newSelectedFiles]);
+            })
+            .catch((err) => {
+              console.log(err?.response, err?.response?.data?.message);
+            });
+        };
+        reader.onerror = () => {
+          console.error(`Error occurred reading file: ${originalName}`);
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    },
+  });
 
   const subcategoriesQuery = trpc.useQuery(
     ['subCategory.allWithCategory', { locale }],
@@ -67,7 +105,9 @@ const AddAdvert = () => {
   );
 
   const createAd = (values: AddAdvertFormValues) => {
-    const photos = selectedFiles.map((selectedFile) => selectedFile.id);
+    const photos = selectedFiles.map((selectedFile) => {
+      return { name: selectedFile.name, url: selectedFile.url };
+    });
     const allValues = {
       photos,
       subCategory: subCategorySelected ?? undefined,
@@ -84,44 +124,26 @@ const AddAdvert = () => {
       setAvailableSubcategories(subCategories[0].subCategory);
     }
   };
+  useEffect(() => {
+    console.log(selectedFiles);
+  }, [selectedFiles]);
 
-  const addFile = async (files: File[]) => {
-    const notUploaded = files.filter((file) => {
-      const filesNotUploaded = selectedFiles.filter(
-        (selectedFile) => selectedFile.name === file.name,
-      );
-      return filesNotUploaded;
-    });
-    notUploaded.map(async (file) => {
+  const addFile = (files: File[]) => {
+    files.map((file) => {
       const fileName = file.name;
-
-      if (fileName) {
-        const base64: any = await convertBase64(file);
+      if (!addedFiles[fileName]) {
+        let addedFile = {};
+        addedFile[fileName] = { file, fileType: file.type as AllowedImages };
+        setAddedFiles({ ...addedFile, ...addedFiles });
         addPhotoMutation.mutate({
-          fileEncoded: base64.toString() as string,
-          name: fileName,
+          fileType: file.type as AllowedImages,
+          name: file.name,
         });
       }
     });
   };
-  useEffect(() => {
-    console.log(addPhotoMutation.data);
 
-    if (addPhotoMutation.data) {
-      const { url, name, id } = addPhotoMutation.data;
-      const file: ReturnedPhotoUrl = {
-        name: name ?? undefined,
-        url,
-        thumbnailUrl: `${url}?tr=h-150&w-150`,
-        id,
-      };
-      if (!selectedFiles.includes(file)) {
-        setSelectedFiles([file, ...selectedFiles]);
-      }
-      console.log(selectedFiles);
-    }
-  }, [addPhotoMutation.data]);
-
+  useEffect(() => {}, [addedFiles]);
   useEffect(() => {
     if (subCategorySelected) {
       form.setFieldValue('subCategory', subCategorySelected);
@@ -181,7 +203,7 @@ const AddAdvert = () => {
       </Dropzone>
       <Group>
         {selectedFiles.map((file) => (
-          <Image width={100} src={file.thumbnailUrl} />
+          <Image width={100} key={file.name} src={file.thumbnailUrl} />
         ))}
       </Group>
       <Button type="submit">Submit</Button>

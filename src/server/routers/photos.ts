@@ -2,87 +2,58 @@ import { createRouter } from 'server/createRouter';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { getSession } from 'next-auth/react';
-import fs from 'fs';
-const { Storage } = require('@google-cloud/storage');
-const slugify = require('slugify');
+import { v4 as uuidv4 } from 'uuid';
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '4mb',
-    },
-  },
-};
+const { Storage } = require('@google-cloud/storage');
+const mime = require('mime-types');
+
+const ImageTypes = z.enum([
+  'image/png',
+  'image/jpeg',
+  'image/sgv+xml',
+  'image/gif',
+  'image/webp',
+]);
 
 export const photosRouter = createRouter().mutation('uploadFile', {
   input: z.object({
+    fileType: ImageTypes,
     name: z.string(),
-    fileEncoded: z.string(),
   }),
   async resolve({ ctx, input }) {
     const session = await getSession(ctx);
+
     if (!session?.user?.email) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
-    const { fileEncoded, name } = input;
-    const fileName = slugify(name);
-    const data = fileEncoded.replace(/^data:image\/\w+;base64,/, '');
-    const filePath = './uploads/photos';
-    if (!fs.existsSync(filePath)) {
-      fs.mkdirSync(filePath, { recursive: true });
+    const { fileType, name } = input;
+    const fileExtension = mime.extension(fileType);
+    const fileName = `${uuidv4()}.${fileExtension}`;
+    let storage;
+    if (process.env.NODE_ENV === 'production') {
+      storage = new Storage();
+    } else {
+      storage = new Storage({ keyFilename: 'bazos.json' });
     }
-    const filePathWithName = `${filePath}/${fileName}`;
-    fs.writeFile(
-      filePathWithName,
-      data,
-      { encoding: 'base64' },
-      function (err) {},
-    );
-    const gCloudPath = `uploads/photos/${fileName}`;
-    const storage = new Storage({ keyFilename: 'bazos.json' });
     const bucketName = 'nejdej-photos-storage';
-    async function uploadFile() {
-      await storage.bucket(bucketName).upload(filePathWithName, {
-        destination: gCloudPath,
-      });
-
-      console.log(`${filePath} uploaded to ${bucketName}`);
-    }
     const options = {
       action: 'write',
-      expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-      contentType: 'image/webp',
+      expires: Date.now() + 12 * 60 * 60 * 1000, // 12 hours
+      contentType: fileType,
     };
+    const fullUrl = `https://ik.imagekit.io/opyvhypp7cj/nejdej/${fileName}`;
+    const thumbnailUrl = `https://ik.imagekit.io/opyvhypp7cj/nejdej/${fileName}?tr=h-150,w-150,cm-force,bg-F3F3F3,ox-N35,oy-N50,ots-50,oa-6,otbg-70FFFF30`;
 
-    // Get a v4 signed URL for uploading file
     const [url] = await storage
       .bucket(bucketName)
       .file(fileName)
       .getSignedUrl(options);
-    fs.writeFileSync('./test.txt', url);
-
-    return uploadFile()
-      .then(async () => {
-        const url = `https://ik.imagekit.io/opyvhypp7cj/nejdej/${gCloudPath}`;
-        const photo = await ctx.prisma.photo.create({
-          data: {
-            url,
-            name: fileName,
-          },
-          select: {
-            url: true,
-            name: true,
-            id: true,
-          },
-        });
-        return photo;
-      })
-      .catch((err) => {
-        console.log(err);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'File Upload Failed',
-        });
-      });
+    return {
+      signedUrl: url,
+      fileName,
+      originalName: name,
+      thumbnailUrl,
+      url: fullUrl,
+    };
   },
 });

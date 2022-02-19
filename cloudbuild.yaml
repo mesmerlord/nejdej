@@ -4,13 +4,13 @@ steps:
       [
         'build',
         '-t',
-        'gcr.io/bazos-341220/bazos-new:$COMMIT_SHA',
+        'gcr.io/bazos-341220/bazos-new:$SHORT_SHA',
         '--cache-from',
         'gcr.io/bazos-341220/bazos-new:latest',
         '.',
       ]
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/bazos-341220/bazos-new:$COMMIT_SHA']
+    args: ['push', 'gcr.io/bazos-341220/bazos-new:$SHORT_SHA']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -19,9 +19,9 @@ steps:
         'deploy',
         'bazos-new',
         '--image',
-        'gcr.io/bazos-341220/bazos-new:$COMMIT_SHA',
+        'gcr.io/bazos-341220/bazos-new:$SHORT_SHA',
         '--region',
-        'REGION',
+        'europe-west3',
       ]
 images:
   - gcr.io/bazos-341220/bazos-new/

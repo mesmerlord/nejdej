@@ -48,6 +48,19 @@ export const photosRouter = createRouter().mutation('uploadFile', {
 
       console.log(`${filePath} uploaded to ${bucketName}`);
     }
+    const options = {
+      action: 'write',
+      expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+      contentType: 'image/webp',
+    };
+
+    // Get a v4 signed URL for uploading file
+    const [url] = await storage
+      .bucket(bucketName)
+      .file(fileName)
+      .getSignedUrl(options);
+    fs.writeFileSync('./test.txt', url);
+
     return uploadFile()
       .then(async () => {
         const url = `https://ik.imagekit.io/opyvhypp7cj/nejdej/${gCloudPath}`;

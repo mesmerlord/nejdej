@@ -12,3 +12,5 @@ npm-debug.log
 README.md
 bazos.json
 commands.txt
+uploads/photos/*
+!dummy.txt

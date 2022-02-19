@@ -2,9 +2,8 @@ import { useRouter } from 'next/router';
 import { trpc } from 'utils/trpc';
 import NextError from 'next/error';
 import { NextPageWithLayout } from 'pages/_app';
-import { Box, Col, Container, Grid, Image, Text, Title } from '@mantine/core';
+import { Container, Text, Title } from '@mantine/core';
 import { useCallback, useEffect, useState } from 'react';
-import Gallery from 'react-grid-gallery';
 import ImageBox from 'components/common/ImageBox';
 
 type ImageTypes = {

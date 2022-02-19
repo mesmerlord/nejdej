@@ -48,4 +48,5 @@ playwright/screenshots
 
 commands.txt
 bazos.json
-uploads/
+uploads/photos/*
+!dummy.txt

@@ -5,7 +5,7 @@ import { Group } from '@mantine/core';
 import { Title } from '@mantine/core';
 import { ActionIcon } from '@mantine/core';
 import { Divider, Paper } from '@mantine/core';
-import ReactGA from 'react-ga';
+// import ReactGA from 'react-ga';
 import { useStore } from '../Store/StoreProvider';
 import LinkText from '../common/LinkText';
 import Sidebar from './Sidebar';

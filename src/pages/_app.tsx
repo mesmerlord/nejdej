@@ -5,12 +5,15 @@ import { NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { AppProps } from 'next/app';
 import { AppType } from 'next/dist/shared/lib/utils';
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { AppRouter } from 'server/routers/_app';
 import superjson from 'superjson';
 import Background from 'components/Background/Background';
 import { useHydrate } from '../components/Store/Store';
 import { StoreProvider } from '../components/Store/StoreProvider';
+import { useRouter } from 'next/router';
+import ReactGA from 'react-ga4';
+import Loading from 'components/common/Loading';
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -22,10 +25,48 @@ type AppPropsWithLayout = AppProps & {
 
 const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
   const store = useHydrate(pageProps.initialZustandState);
+  const router = useRouter();
+  const [state, setState] = useState({
+    isRouteChanging: false,
+    loadingKey: 0,
+  });
+  useEffect(() => {
+    const handleRouteChangeStart = () => {
+      ReactGA.send({ hitType: 'pageview', page: router.pathname });
+
+      setState((prevState) => ({
+        ...prevState,
+        isRouteChanging: true,
+        loadingKey: prevState.loadingKey ^ 1,
+      }));
+    };
+
+    const handleRouteChangeEnd = () => {
+      setState((prevState) => ({
+        ...prevState,
+        isRouteChanging: false,
+      }));
+    };
+
+    router.events.on('routeChangeStart', handleRouteChangeStart);
+    router.events.on('routeChangeComplete', handleRouteChangeEnd);
+    router.events.on('routeChangeError', handleRouteChangeEnd);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+      router.events.off('routeChangeComplete', handleRouteChangeEnd);
+      router.events.off('routeChangeError', handleRouteChangeEnd);
+    };
+  }, [router.events]);
+
   return (
     <StoreProvider store={store}>
       <SessionProvider session={pageProps.session}>
         <Background>
+          <Loading
+            isRouteChanging={state.isRouteChanging}
+            key={state.loadingKey}
+          />
           <Component {...pageProps} />
         </Background>
       </SessionProvider>

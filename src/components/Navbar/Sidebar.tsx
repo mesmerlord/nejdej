@@ -1,4 +1,4 @@
-import { Button, Drawer, Accordion, Title, Group } from '@mantine/core';
+import { Button, Drawer, Accordion, Title, Group, Text } from '@mantine/core';
 // import { useHistory } from "react-router-dom";
 import { useRouter } from 'next/router';
 import { routes } from '../utils/Routes';
@@ -6,6 +6,8 @@ import LinkText from '../common/LinkText';
 import { useStore } from '../Store/StoreProvider';
 import { useEffect } from 'react';
 import React from 'react';
+import { useSession, signOut, signIn } from 'next-auth/react';
+
 interface SidebarProps {
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +18,8 @@ const Sidebar = ({ opened, setOpened }: SidebarProps) => {
   const accessToken = useStore((state: any) => state.accessToken);
   const logOut = useStore((state: any) => state.logOut);
   const router = useRouter();
+
+  const { data: session } = useSession();
   useEffect(() => {
     router.events.on('routeChangeComplete', () => {
       setOpened(false);
@@ -89,25 +93,19 @@ const Sidebar = ({ opened, setOpened }: SidebarProps) => {
           Search
         </Button>
       </LinkText>
-      {/* {!accessToken ? (
-        <Button
-          onClick={() => history.push(`${routes.login}`)}
-          leftIcon={<LoginIcon />}
-          fullWidth
-          size="md"
-        >
+
+      {!session?.user ? (
+        <Button onClick={() => signIn()} leftIcon={'🔓'} fullWidth size="md">
           Log In
         </Button>
       ) : (
-        <Button
-          onClick={() => logOut()}
-          leftIcon={<LogoutIcon />}
-          fullWidth
-          size="md"
-        >
-          Log Out
-        </Button>
-      )} */}
+        <>
+          <Button onClick={() => signOut()} leftIcon={'🔒'} fullWidth size="md">
+            Log Out
+          </Button>
+          <Title sx={{ marginTop: '10px' }}>Hi {session.user?.name}</Title>
+        </>
+      )}
     </Drawer>
   );
 };

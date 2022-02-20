@@ -1,7 +1,19 @@
-import { Group, Image, Text, useMantineTheme, Container } from '@mantine/core';
+import {
+  Group,
+  Image,
+  Text,
+  useMantineTheme,
+  Container,
+  Card,
+  Button,
+  createStyles,
+  Box,
+  Grid,
+  Col,
+} from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { trpc } from 'utils/trpc';
 import { ImageIcon, UploadIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 
@@ -43,9 +55,35 @@ function getIconColor(status, theme) {
     : theme.black;
 }
 
+const useStyles = createStyles((theme) => ({
+  disabled: {
+    backgroundColor:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[6]
+        : theme.colors.gray[0],
+    borderColor:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[5]
+        : theme.colors.gray[2],
+    cursor: 'not-allowed',
+
+    '& *': {
+      color:
+        theme.colorScheme === 'dark'
+          ? theme.colors.dark[3]
+          : theme.colors.gray[5],
+    },
+  },
+}));
+
 const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
   const [addedFiles, setAddedFiles] = useState<{}>({});
+  const [filesRemaining, setFilesRemaining] = useState<number>(
+    Math.min(5 - Object.keys(selectedFiles).length, 5),
+  );
+  const [uploading, setUploading] = useState<boolean>(false);
   const theme = useMantineTheme();
+  const { classes } = useStyles();
 
   const addPhotoMutation = trpc.useMutation(['photos.uploadFile'], {
     onSettled: (data) => {
@@ -56,6 +94,7 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
         const file = addedFiles[originalName].file;
         reader.onload = () => {
           const result = reader.result;
+          setUploading(true);
           axios
             .put(signedUrl, file, {
               headers: {
@@ -68,6 +107,7 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
                 thumbnailUrl,
                 url,
               };
+              setUploading(false);
               setSelectedFiles((oldArray) => [...oldArray, newSelectedFiles]);
             })
             .catch((err) => {
@@ -81,6 +121,17 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
       }
     },
   });
+  const deleteFile = (fileName: string) => {
+    const newSelectedFiles = selectedFiles.filter(
+      (file) => file.name != fileName,
+    );
+    setSelectedFiles(newSelectedFiles);
+    setFilesRemaining(filesRemaining - 1);
+  };
+  useEffect(() => {
+    setFilesRemaining(Math.min(5 - Object.keys(selectedFiles).length, 5));
+  }, [selectedFiles]);
+
   const addFile = (files: File[]) => {
     files.map((file) => {
       const fileName = file.name;
@@ -102,6 +153,8 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
           onDrop={addFile}
           onReject={(files) => console.log('rejected files', files)}
           maxSize={3 * 1024 ** 2}
+          disabled={filesRemaining === 0 ? true : false}
+          className={(filesRemaining === 0 && classes.disabled) || ''}
           accept={[
             'image/png',
             'image/jpeg',
@@ -109,7 +162,7 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
             'image/gif',
             'image/webp',
           ]}
-          loading={addPhotoMutation?.isLoading}
+          loading={addPhotoMutation?.isLoading || uploading}
         >
           {(status) => (
             <Group
@@ -139,11 +192,65 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
           )}
         </Dropzone>
       </Container>
-      <Group>
+      <Grid>
         {selectedFiles.map((file) => (
-          <Image width={100} key={file.name} src={file.thumbnailUrl} />
+          <Col span={12} sm={6} md={2} xs={6} xl={2}>
+            <Box
+              sx={{
+                position: 'relative',
+              }}
+            >
+              <Card
+                sx={{
+                  '&:hover': {
+                    boxShadow: '0 2px 16px 0 rgba(0, 0, 0, 0.3)',
+                  },
+                  transition: 'box-shadow 0.25s',
+                }}
+              >
+                <Button
+                  color="red"
+                  onClick={() => {
+                    deleteFile(file.name);
+                  }}
+                  radius={1200}
+                  size="lg"
+                  compact
+                  sx={{
+                    position: 'absolute',
+                    right: '7px',
+                    top: '2px',
+                    zIndex: 10,
+                  }}
+                >
+                  X
+                </Button>
+                <Image
+                  height="100%"
+                  width="100%"
+                  key={file.name}
+                  src={file.thumbnailUrl}
+                  fit="contain"
+                  radius="md"
+                />
+              </Card>
+            </Box>
+          </Col>
         ))}
-      </Group>
+        {Array.from(Array(filesRemaining).keys()).map((file) => (
+          <Col span={12} sm={6} md={2} xs={6} xl={2}>
+            <Box
+              sx={{
+                '&:hover': {
+                  boxShadow: '0 4px 16px 0 rgba(0, 0, 0, 0.3)',
+                },
+              }}
+            >
+              <Image height="100%" width="100%" withPlaceholder />
+            </Box>
+          </Col>
+        ))}
+      </Grid>
     </>
   );
 };

@@ -126,16 +126,16 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
       (file) => file.name != fileName,
     );
     setSelectedFiles(newSelectedFiles);
-    setFilesRemaining(filesRemaining - 1);
+    setFilesRemaining(filesRemaining + 1);
   };
   useEffect(() => {
-    setFilesRemaining(Math.min(5 - Object.keys(selectedFiles).length, 5));
+    setFilesRemaining(Math.max(6 - Object.keys(selectedFiles).length, 0));
   }, [selectedFiles]);
 
   const addFile = (files: File[]) => {
-    files.map((file) => {
+    files.slice(0, 6).map((file) => {
       const fileName = file.name;
-      if (!addedFiles[fileName]) {
+      if (!addedFiles[fileName] && filesRemaining !== 0) {
         let addedFile = {};
         addedFile[fileName] = { file, fileType: file.type as AllowedImages };
         setAddedFiles({ ...addedFile, ...addedFiles });
@@ -148,65 +148,65 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
   };
   return (
     <>
-      <Container>
-        <Dropzone
-          onDrop={addFile}
-          onReject={(files) => console.log('rejected files', files)}
-          maxSize={3 * 1024 ** 2}
-          disabled={filesRemaining === 0 ? true : false}
-          className={(filesRemaining === 0 && classes.disabled) || ''}
-          accept={[
-            'image/png',
-            'image/jpeg',
-            'image/sgv+xml',
-            'image/gif',
-            'image/webp',
-          ]}
-          loading={addPhotoMutation?.isLoading || uploading}
-        >
-          {(status) => (
-            <Group
-              position="center"
-              spacing="xl"
-              style={{ minHeight: 220, pointerEvents: 'none' }}
-            >
-              <ImageUploadIcon
-                status={status}
-                style={{
-                  width: 80,
-                  height: 80,
-                  color: getIconColor(status, theme),
-                }}
-              />
+      <Container sx={{ marginTop: '10px' }}>
+        {filesRemaining !== 0 && (
+          <Dropzone
+            onDrop={addFile}
+            onReject={(files) => console.log('rejected files', files)}
+            maxSize={3 * 1024 ** 2}
+            disabled={filesRemaining === 0 ? true : false}
+            className={(filesRemaining === 0 && classes.disabled) || ''}
+            accept={[
+              'image/png',
+              'image/jpeg',
+              'image/sgv+xml',
+              'image/gif',
+              'image/webp',
+            ]}
+            loading={addPhotoMutation?.isLoading || uploading}
+            sx={{ marginBottom: '10px' }}
+          >
+            {(status) => (
+              <Group
+                position="center"
+                spacing="xl"
+                style={{ minHeight: 220, pointerEvents: 'none' }}
+              >
+                <ImageUploadIcon
+                  status={status}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    color: getIconColor(status, theme),
+                  }}
+                />
 
-              <div>
-                <Text size="xl" inline>
-                  Drag images here or click to select files
-                </Text>
-                <Text size="sm" color="dimmed" inline mt={7}>
-                  Attach as many files as you like, each file should not exceed
-                  5mb
-                </Text>
-              </div>
-            </Group>
-          )}
-        </Dropzone>
+                <div>
+                  <Text size="xl" inline>
+                    Drag images here or click to select files
+                  </Text>
+                  <Text size="sm" color="dimmed" inline mt={7}>
+                    Attach 6 files as you like, each file should not exceed 5mb
+                  </Text>
+                </div>
+              </Group>
+            )}
+          </Dropzone>
+        )}
       </Container>
-      <Grid>
-        {selectedFiles.map((file) => (
-          <Col span={12} sm={6} md={2} xs={6} xl={2}>
-            <Box
-              sx={{
-                position: 'relative',
-              }}
-            >
+      <Container sx={{ marginBottom: '10px' }}>
+        <Grid>
+          {selectedFiles.map((file) => (
+            <Col span={12} sm={6} md={2} xs={6} xl={2}>
               <Card
                 sx={{
                   '&:hover': {
                     boxShadow: '0 2px 16px 0 rgba(0, 0, 0, 0.3)',
                   },
                   transition: 'box-shadow 0.25s',
+                  position: 'relative',
                 }}
+                padding={1}
               >
                 <Button
                   color="red"
@@ -234,23 +234,48 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
                   radius="md"
                 />
               </Card>
-            </Box>
-          </Col>
-        ))}
-        {Array.from(Array(filesRemaining).keys()).map((file) => (
-          <Col span={12} sm={6} md={2} xs={6} xl={2}>
-            <Box
-              sx={{
-                '&:hover': {
-                  boxShadow: '0 4px 16px 0 rgba(0, 0, 0, 0.3)',
-                },
-              }}
-            >
-              <Image height="100%" width="100%" withPlaceholder />
-            </Box>
-          </Col>
-        ))}
-      </Grid>
+            </Col>
+          ))}
+          {Array.from(Array(filesRemaining).keys()).map((file) => (
+            <Col span={12} sm={6} md={2} xs={6} xl={2}>
+              <Box
+                sx={{
+                  backgroundColor:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors.dark[6]
+                      : theme.colors.gray[0],
+                  textAlign: 'center',
+                  // padding: theme.spacing.xl,
+                  padding: '50px',
+                  borderRadius: theme.radius.md,
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor:
+                      theme.colorScheme === 'dark'
+                        ? theme.colors.dark[5]
+                        : theme.colors.gray[1],
+                  },
+                }}
+              >
+                <ImageIcon
+                  style={{
+                    width: 20,
+                    height: 20,
+                  }}
+                />
+                <ImageUploadIcon
+                  style={{
+                    width: 16,
+                    height: 16,
+                    margin: '3px',
+                  }}
+                  status={{ accepted: true }}
+                />
+              </Box>
+            </Col>
+          ))}
+        </Grid>
+      </Container>
     </>
   );
 };

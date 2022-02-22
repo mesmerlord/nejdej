@@ -107,6 +107,14 @@ export default withTRPC<AppRouter>({
       /**
        * @link https://trpc.io/docs/links
        */
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+            staleTime: Infinity,
+          },
+        },
+      },
       links: [
         // adds pretty logs to your console in development and logs errors in production
         loggerLink({

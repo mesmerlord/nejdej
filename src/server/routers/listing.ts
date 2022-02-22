@@ -35,6 +35,7 @@ export const listingRouter = createRouter()
           description,
           subCategory: { connect: { id: subCategory } },
           price,
+          View: { create: {} },
         },
         select: {
           title: true,
@@ -43,6 +44,7 @@ export const listingRouter = createRouter()
           price: true,
           photos: true,
           id: true,
+          View: {},
         },
       });
       const listingView = ctx.prisma.view.create({
@@ -92,6 +94,23 @@ export const listingRouter = createRouter()
       let listing;
       if (count) {
         listing = JSON.parse(count);
+        if (listing?.View) {
+          const newListing = { ...listing };
+          console.log(newListing);
+          newListing.View.dailyView = newListing.View.dailyView + 1;
+          newListing.View.monthlyView = newListing.View.monthlyView + 1;
+          newListing.View.totalView = newListing.View.totalView + 1;
+          newListing.View.weeklyView = newListing.View.weeklyView + 1;
+          newListing.yearlyView = newListing.View.yearlyView + 1;
+          const newView = newListing.View;
+          redis.set(id, JSON.stringify(newListing));
+          ctx.prisma.view
+            .update({
+              where: { id: newView.id },
+              data: { ...newView },
+            })
+            .then();
+        }
       } else {
         listing = await ctx.prisma.listing.findUnique({
           where: { id },

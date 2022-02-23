@@ -16,10 +16,7 @@ type ImageTypes = {
 };
 const ListingViewPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
-  const listingQuery = trpc.useQuery(['listing.byId', { id }], {
-    refetchOnWindowFocus: false,
-    staleTime: Infinity,
-  });
+  const listingQuery = trpc.useQuery(['listing.byId', { id }]);
   const { data } = listingQuery;
 
   if (listingQuery.error) {

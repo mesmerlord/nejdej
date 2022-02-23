@@ -5,9 +5,18 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { MagnifyingGlassIcon, SizeIcon } from '@radix-ui/react-icons';
 
-const ImageBox = ({ images }) => {
+type Image = {
+  url: string;
+  id: string;
+};
+
+interface ImageBoxProps {
+  images: Image[];
+}
+
+const ImageBox = ({ images }: ImageBoxProps) => {
   const [mainImage, setMainImage] = useState(0);
-  const [maximizedImage, setMaximizedImage] = useState<object | null>();
+  const [maximizedImage, setMaximizedImage] = useState<Image | null>();
   const [opened, setOpened] = useState(false);
 
   const settings = {

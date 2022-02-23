@@ -8,6 +8,35 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { getSession } from 'next-auth/react';
 import Redis from 'ioredis';
+import { View } from '@prisma/client';
+
+type ListingFindOne = {
+  User: {
+    name: string | null;
+    email: string | null;
+    image: string | null;
+  } | null;
+  View: View | null;
+  subCategory: {
+    Category: {
+      id: string;
+      enTitle: string;
+    } | null;
+    id: string;
+    enTitle: string;
+  }[];
+  title: string;
+  description: string | null;
+  status: boolean;
+  photos: {
+    url: string;
+    id: string;
+  }[];
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  viewId: string | null;
+} | null;
 
 export const listingRouter = createRouter()
   // create
@@ -23,7 +52,6 @@ export const listingRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       const { photos, title, description, subCategory, price } = input;
-      console.log(photos);
       const listing = await ctx.prisma.listing.create({
         data: {
           photos: photos
@@ -91,25 +119,27 @@ export const listingRouter = createRouter()
       let redis = new Redis(process.env.REDIS_URL);
 
       const count = await redis.get(id);
-      let listing;
+      let listing: ListingFindOne;
       if (count) {
         listing = JSON.parse(count);
-        if (listing?.View) {
-          const newListing = { ...listing };
-          console.log(newListing);
-          newListing.View.dailyView = newListing.View.dailyView + 1;
-          newListing.View.monthlyView = newListing.View.monthlyView + 1;
-          newListing.View.totalView = newListing.View.totalView + 1;
-          newListing.View.weeklyView = newListing.View.weeklyView + 1;
-          newListing.yearlyView = newListing.View.yearlyView + 1;
-          const newView = newListing.View;
-          redis.set(id, JSON.stringify(newListing));
-          ctx.prisma.view
-            .update({
-              where: { id: newView.id },
-              data: { ...newView },
-            })
-            .then();
+        if (listing) {
+          const newListing: ListingFindOne = { ...listing };
+
+          if (newListing?.View) {
+            newListing.View.dailyView = newListing.View?.dailyView + 1;
+            newListing.View.monthlyView = newListing.View.monthlyView + 1;
+            newListing.View.totalView = newListing.View.totalView + 1;
+            newListing.View.weeklyView = newListing.View.weeklyView + 1;
+            newListing.View.yearlyView = newListing.View.yearlyView + 1;
+            const newView = newListing.View;
+            redis.set(id, JSON.stringify(newListing));
+            ctx.prisma.view
+              .update({
+                where: { id: newView.id },
+                data: { ...newView },
+              })
+              .then();
+          }
         }
       } else {
         listing = await ctx.prisma.listing.findUnique({

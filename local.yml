@@ -1,17 +1,14 @@
-version: '3.6'
+version: '2'
 services:
-  postgres:
-    image: postgres:13
-    ports:
-      - '5632:5432' # expose pg on port 5632 to not collide with pg from elswhere
-    restart: always
+  nejdej_db:
+    image: mysql:latest
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - './.mysql-data/db:/var/lib/mysql'
+    restart: always
+    ports:
+      - 3308:3306
     environment:
-      POSTGRES_PASSWORD: ${PGPASSWORD}
-      POSTGRES_HOST_AUTH_METHOD: trust\
-    env_file:
-      - .env
-
-volumes:
-  db_data:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test

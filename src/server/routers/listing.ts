@@ -15,6 +15,7 @@ type ListingFindOne = {
     name: string | null;
     email: string | null;
     image: string | null;
+    id: string | null;
   } | null;
   View: View | null;
   subCategory: {
@@ -52,6 +53,10 @@ export const listingRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       const { photos, title, description, subCategory, price } = input;
+      const session = await getSession(ctx);
+      if (!session?.user?.email) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
       const listing = await ctx.prisma.listing.create({
         data: {
           photos: photos
@@ -64,6 +69,7 @@ export const listingRouter = createRouter()
           subCategory: { connect: { id: subCategory } },
           price,
           View: { create: {} },
+          User: { connect: { email: session?.user?.email } },
         },
         select: {
           title: true,
@@ -116,66 +122,56 @@ export const listingRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       const { id } = input;
-      let redis = new Redis(process.env.REDIS_URL);
-
-      const count = await redis.get(id);
-      let listing: ListingFindOne;
-      if (count) {
-        listing = JSON.parse(count);
-        if (listing) {
-          const newListing: ListingFindOne = { ...listing };
-
-          if (newListing?.View) {
-            newListing.View.dailyView = newListing.View?.dailyView + 1;
-            newListing.View.monthlyView = newListing.View.monthlyView + 1;
-            newListing.View.totalView = newListing.View.totalView + 1;
-            newListing.View.weeklyView = newListing.View.weeklyView + 1;
-            newListing.View.yearlyView = newListing.View.yearlyView + 1;
-            const newView = newListing.View;
-            redis.set(id, JSON.stringify(newListing));
-            ctx.prisma.view
-              .update({
-                where: { id: newView.id },
-                data: { ...newView },
-              })
-              .then();
-          }
-        }
-      } else {
-        listing = await ctx.prisma.listing.findUnique({
-          where: { id },
-          select: {
-            photos: {
-              select: {
-                url: true,
-                id: true,
-              },
+      const listing = await ctx.prisma.listing.findUnique({
+        where: { id },
+        select: {
+          photos: {
+            select: {
+              url: true,
+              id: true,
             },
-            id: true,
-            title: true,
-            description: true,
-            status: true,
-            subCategory: {
-              select: {
-                id: true,
-                enTitle: true,
-                Category: {
-                  select: {
-                    id: true,
-                    enTitle: true,
-                  },
+          },
+          id: true,
+          title: true,
+          description: true,
+          status: true,
+          subCategory: {
+            select: {
+              id: true,
+              enTitle: true,
+              Category: {
+                select: {
+                  id: true,
+                  enTitle: true,
                 },
               },
             },
-            createdAt: true,
-            updatedAt: true,
-            User: { select: { name: true, email: true, image: true } },
-            View: true,
-            viewId: true,
           },
-        });
-        redis.set(id, JSON.stringify(listing));
+          createdAt: true,
+          updatedAt: true,
+          User: {
+            select: { id: true, name: true, email: true, image: true },
+          },
+          View: true,
+          viewId: true,
+        },
+      });
+
+      if (listing?.View) {
+        listing.View.dailyView = listing.View?.dailyView + 1;
+        listing.View.monthlyView = listing.View.monthlyView + 1;
+        listing.View.totalView = listing.View.totalView + 1;
+        listing.View.weeklyView = listing.View.weeklyView + 1;
+        listing.View.yearlyView = listing.View.yearlyView + 1;
+        const newView = listing.View;
+        ctx.prisma.view
+          .update({
+            where: { id: newView.id },
+            data: { ...newView },
+          })
+          .then();
       }
+
       if (!listing) {
         throw new TRPCError({
           code: 'NOT_FOUND',

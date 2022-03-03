@@ -14,3 +14,4 @@ bazos.json
 commands.txt
 uploads/photos/*
 !dummy.txt
+.mysql-data

@@ -16,6 +16,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { trpc } from 'utils/trpc';
 import { ImageIcon, UploadIcon, CrossCircledIcon } from '@radix-ui/react-icons';
+import { useNotifications } from '@mantine/notifications';
 
 type ReturnedPhotoUrl = {
   name: string;
@@ -78,6 +79,8 @@ const useStyles = createStyles((theme) => ({
 
 const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
   const [addedFiles, setAddedFiles] = useState<{}>({});
+  const notifications = useNotifications();
+
   const [filesRemaining, setFilesRemaining] = useState<number>(
     Math.min(5 - Object.keys(selectedFiles).length, 5),
   );
@@ -118,6 +121,15 @@ const DropImage = ({ selectedFiles, setSelectedFiles }: DropImageProps) => {
           console.error(`Error occurred reading file: ${originalName}`);
         };
         reader.readAsArrayBuffer(file);
+      }
+    },
+    onError: (error) => {
+      if (error?.data?.httpStatus === 401) {
+        notifications.showNotification({
+          title: 'Not Authorized',
+          message: 'You need to be logged in before you can upload photos',
+          color: 'red',
+        });
       }
     },
   });

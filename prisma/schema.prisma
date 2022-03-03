@@ -2,13 +2,17 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgres"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+    referentialIntegrity = "prisma"
+
 }
 
 generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
+  previewFeatures = ["referentialIntegrity"]
+
 }
 
 model Role {
@@ -90,6 +94,7 @@ model User {
   Listing        Listing[]
   role          Role?     @relation(fields: [roleId], references: [id])
   roleId        String?
+
 }
 
 model Category {

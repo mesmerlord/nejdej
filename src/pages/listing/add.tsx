@@ -8,6 +8,7 @@ import {
   Text,
   Image,
   Container,
+  Notification,
 } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import DropImage from 'components/listingsAdd/DropImage';
@@ -15,6 +16,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { trpc } from 'utils/trpc';
 import { InferMutationInput } from 'utils/trpc-helper';
+import { useNotifications } from '@mantine/notifications';
 
 type AddListingFormValues = InferMutationInput<'listing.add'>;
 type ReturnedPhotoUrl = {
@@ -26,6 +28,7 @@ const AddListing = () => {
   const router = useRouter();
   const { locale } = router;
   const [selectedFiles, setSelectedFiles] = useState<ReturnedPhotoUrl[]>([]);
+  const notifications = useNotifications();
 
   const [availableSubcategories, setAvailableSubcategories] = useState<
     any[] | null
@@ -42,11 +45,20 @@ const AddListing = () => {
   const form = useForm({
     initialValues: initial_values,
   });
-  const mutation = trpc.useMutation(['listing.add']);
+  const mutation = trpc.useMutation(['listing.add'], {
+    onSuccess: () => {
+      notifications.showNotification({
+        title: 'Listing added',
+        message: 'Hey there, your listing is now visible',
+      });
+    },
+  });
 
   const subcategoriesQuery = trpc.useQuery(
     ['subCategory.allWithCategory', { locale }],
-    { refetchOnWindowFocus: false },
+    {
+      refetchOnWindowFocus: false,
+    },
   );
 
   const createAd = (values: AddListingFormValues) => {

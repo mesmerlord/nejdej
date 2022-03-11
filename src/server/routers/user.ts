@@ -28,6 +28,27 @@ export const userRouter = createRouter()
       const { id } = input;
       const user = await ctx.prisma.user.findUnique({
         where: { id },
+        select: {
+          id: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
+          email: true,
+          Review: true,
+          image: true,
+          Listing: {
+            select: {
+              id: true,
+              photos: {
+                select: {
+                  url: true,
+                },
+              },
+              description: true,
+              title: true,
+            },
+          },
+        },
       });
       if (!user) {
         throw new TRPCError({

@@ -44,7 +44,9 @@ const ListingViewPage: NextPageWithLayout = () => {
             <Text>{data?.description}</Text>
             <Text>{data?.View?.dailyView}</Text>
             <Text>{JSON.stringify(data)}</Text>
-            <LinkText href={`/${data.User?.id}`}>{data.User?.name}</LinkText>
+            <LinkText href={`/user/${data.User?.id}`}>
+              {data.User?.name}
+            </LinkText>
           </Container>
         )}
       </Container>

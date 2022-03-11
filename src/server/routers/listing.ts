@@ -7,37 +7,7 @@ import { createRouter } from 'server/createRouter';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { getSession } from 'next-auth/react';
-import Redis from 'ioredis';
 import { View } from '@prisma/client';
-
-type ListingFindOne = {
-  User: {
-    name: string | null;
-    email: string | null;
-    image: string | null;
-    id: string | null;
-  } | null;
-  View: View | null;
-  subCategory: {
-    Category: {
-      id: string;
-      enTitle: string;
-    } | null;
-    id: string;
-    enTitle: string;
-  }[];
-  title: string;
-  description: string | null;
-  status: boolean;
-  photos: {
-    url: string;
-    id: string;
-  }[];
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  viewId: string | null;
-} | null;
 
 export const listingRouter = createRouter()
   // create
@@ -156,7 +126,12 @@ export const listingRouter = createRouter()
           viewId: true,
         },
       });
-
+      if (!listing) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `No listing with id '${id}'`,
+        });
+      }
       if (listing?.View) {
         listing.View.dailyView = listing.View?.dailyView + 1;
         listing.View.monthlyView = listing.View.monthlyView + 1;
@@ -172,12 +147,6 @@ export const listingRouter = createRouter()
           .then();
       }
 
-      if (!listing) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `No listing with id '${id}'`,
-        });
-      }
       return listing;
     },
   })

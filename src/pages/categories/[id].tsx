@@ -16,6 +16,7 @@ import {
   Card,
 } from '@mantine/core';
 import LinkText from 'components/common/LinkText';
+import ListingCard from 'components/common/ListingCard';
 const CategoryViewPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
   const locale = useRouter().locale;
@@ -64,33 +65,7 @@ const CategoryViewPage: NextPageWithLayout = () => {
             <Grid>
               {data.map((listing) => (
                 <Col span={12} sm={6} md={4} xs={6} xl={3} key={listing.id}>
-                  <LinkText href={`/listing/${listing.id}`}>
-                    <Card shadow="sm" padding="lg">
-                      <Card.Section>
-                        <Image
-                          src={`${listing?.photos[0]?.url}?=${Math.floor(
-                            Math.random() * 1000,
-                          )}`}
-                          height={160}
-                        />
-                      </Card.Section>
-
-                      <Group position="apart" style={{ marginBottom: 5 }}>
-                        <Text weight={500}>{listing.title}</Text>
-                      </Group>
-
-                      <Text size="sm">{listing.description}</Text>
-
-                      <Button
-                        variant="light"
-                        color="blue"
-                        fullWidth
-                        style={{ marginTop: 14 }}
-                      >
-                        Book classic tour now
-                      </Button>
-                    </Card>
-                  </LinkText>
+                  <ListingCard listing={listing} />
                 </Col>
               ))}
             </Grid>

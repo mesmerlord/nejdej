@@ -10,7 +10,7 @@ steps:
         '.',
       ]
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/bazos-341220/nejdej:$SHORT_SHA']
+    args: ['push', 'gcr.io/bazos-341220/nejdej:latest']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -19,7 +19,7 @@ steps:
         'deploy',
         'nejdej',
         '--image',
-        'gcr.io/bazos-341220/nejdej:$SHORT_SHA',
+        'gcr.io/bazos-341220/nejdej:latest',
         '--region',
         'europe-west4',
       ]

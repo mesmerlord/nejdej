@@ -2,20 +2,7 @@ import { useRouter } from 'next/router';
 import { trpc } from 'utils/trpc';
 import NextError from 'next/error';
 import { NextPageWithLayout } from 'pages/_app';
-import {
-  Badge,
-  Box,
-  Button,
-  Col,
-  Container,
-  Grid,
-  Group,
-  Image,
-  Text,
-  Title,
-  Card,
-} from '@mantine/core';
-import LinkText from 'components/common/LinkText';
+import { Box, Col, Grid } from '@mantine/core';
 import ListingCard from 'components/common/ListingCard';
 const SubCategoryViewPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;

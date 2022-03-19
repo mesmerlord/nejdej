@@ -94,7 +94,8 @@ model User {
   Listing        Listing[]
   role          Role?     @relation(fields: [roleId], references: [id])
   roleId        String?
-
+  aboutMe String?
+  
 }
 
 model Category {

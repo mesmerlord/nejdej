@@ -1,14 +1,9 @@
 import {
   TextInput,
-  Checkbox,
   Button,
   NumberInput,
   Select,
-  Group,
-  Text,
-  Image,
   Container,
-  Notification,
 } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import DropImage from 'components/listingsAdd/DropImage';

@@ -1,15 +1,12 @@
-import Link from 'next/link';
 import { trpc } from '../utils/trpc';
 import { NextPageWithLayout } from './_app';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
 import {
-  Badge,
   Box,
   Button,
   Col,
-  Container,
   Grid,
   Group,
   Image,
@@ -20,7 +17,6 @@ import LinkText from 'components/common/LinkText';
 import { Card } from '@mantine/core';
 
 const IndexPage: NextPageWithLayout = () => {
-  const utils = trpc.useContext();
   const router = useRouter();
 
   const categoriesQuery = trpc.useQuery([

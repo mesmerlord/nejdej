@@ -5,6 +5,8 @@ steps:
         'build',
         '-t',
         'gcr.io/bazos-341220/nejdej:$SHORT_SHA',
+        '-t',
+        'gcr.io/bazos-341220/nejdej:latest',
         '--cache-from',
         'gcr.io/bazos-341220/nejdej:latest',
         '.',

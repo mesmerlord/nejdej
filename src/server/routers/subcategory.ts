@@ -2,7 +2,6 @@ import { createRouter } from 'server/createRouter';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { getSession } from 'next-auth/react';
-import { prisma } from '@prisma/client';
 
 export const subCategoryRouter = createRouter()
   .query('byCategoryId', {

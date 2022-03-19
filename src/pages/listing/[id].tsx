@@ -2,10 +2,10 @@ import { useRouter } from 'next/router';
 import { trpc } from 'utils/trpc';
 import NextError from 'next/error';
 import { NextPageWithLayout } from 'pages/_app';
-import { Container, Text, Title } from '@mantine/core';
-import { useCallback, useEffect, useState } from 'react';
+import { Col, Container, Grid, Group, Text, Title } from '@mantine/core';
 import ImageBox from 'components/common/ImageBox';
 import LinkText from 'components/common/LinkText';
+import { UserCard } from 'components/common/UserCard';
 
 type ImageTypes = {
   id: string;
@@ -40,13 +40,22 @@ const ListingViewPage: NextPageWithLayout = () => {
         {data && data?.photos && (
           <Container>
             <Title>{data.title}</Title>
-            <ImageBox images={data.photos}></ImageBox>
-            <Text>{data?.description}</Text>
+            <ImageBox images={data.photos} />
+            <Grid sx={{ marginTop: '10px' }}>
+              <Col span={9}>
+                <Text>{data.description}</Text>
+              </Col>
+              <Col span={3}>
+                {data.User && (
+                  <UserCard
+                    avatar={data.User.image || ''}
+                    name={data.User.name || 'NA'}
+                    id={data.User.id}
+                  />
+                )}
+              </Col>
+            </Grid>
             <Text>{data?.View?.dailyView}</Text>
-            <Text>{JSON.stringify(data)}</Text>
-            <LinkText href={`/user/${data.User?.id}`}>
-              {data.User?.name}
-            </LinkText>
           </Container>
         )}
       </Container>

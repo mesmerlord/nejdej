@@ -7,7 +7,6 @@ import { createRouter } from 'server/createRouter';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { getSession } from 'next-auth/react';
-import { View } from '@prisma/client';
 
 export const listingRouter = createRouter()
   // create
